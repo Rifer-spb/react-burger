@@ -2,6 +2,7 @@ import React from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
+import PropTypes from "prop-types";
 
 class BurgerIngredients extends React.Component {
 
@@ -44,5 +45,9 @@ class BurgerIngredients extends React.Component {
         );
     }
 }
+
+BurgerIngredients.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.object)
+};
 
 export default BurgerIngredients

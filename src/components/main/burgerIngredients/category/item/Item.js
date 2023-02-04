@@ -1,11 +1,12 @@
 import React from "react";
-import {CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
+import {CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
 import style from './Item.module.css';
 
 class Item extends React.Component {
     render() {
         return (
             <section className={style.item}>
+                <Counter count={1} size="default" extraClass="m-1" />
                 <div>
                     <img src={this.props.item.image} />
                 </div>
