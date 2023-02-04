@@ -19,11 +19,11 @@ class BurgerIngredients extends React.Component {
         this.setState({currentTab: value});
     };
 
-    getCategory = () => {
+    getCategory() {
         return this.state.categories.find(category => category.id === this.state.currentTab);
     };
 
-    getCategoryItems = () => {
+    getCategoryItems() {
         return this.props.items.filter(item => item.type === this.state.currentTab);
     };
 

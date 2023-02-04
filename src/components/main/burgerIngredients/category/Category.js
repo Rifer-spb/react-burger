@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import style from './Category.module.css';
 import Item from './item/Item';
 
@@ -15,5 +16,10 @@ class Category extends React.Component {
         );
     }
 }
+
+Category.propTypes = {
+  category: PropTypes.object.isRequired,
+  items: PropTypes.arrayOf(PropTypes.object)
+};
 
 export default Category

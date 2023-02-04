@@ -2,6 +2,10 @@ import React from "react";
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import style from './BurgerConstructor.module.css';
 
+/**
+ * Функционал не реализовывал. В задаче пока об этом не было написано. Пойа что вывел просто html-ем
+ * */
+
 class BurgerConstructor extends React.Component {
     render() {
         return (

@@ -16,7 +16,7 @@ class AppHeader extends React.Component {
                         <Logo />
                     </section>
                     <section className={style.right}>
-                        <Auth/>
+                        <Auth />
                     </section>
                 </div>
             </header>
