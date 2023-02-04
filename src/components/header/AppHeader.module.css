@@ -1,0 +1,26 @@
+.header {
+    background-color: #1C1C21;
+    padding: 16px 0;
+}
+
+.inner {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.center  {
+    width: 33%;
+    text-align: center;
+}
+
+.left {
+    width: 33%;
+    text-align: left;
+}
+
+.right {
+    width: 33%;
+    text-align: right;
+}

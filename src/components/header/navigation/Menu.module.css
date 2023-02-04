@@ -1,0 +1,21 @@
+.menu ul li {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    padding: 20px;
+}
+
+.menu ul li:first-child {
+    padding-left: 0;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    display: flex;
+}
+
+.menu ul li a>svg {
+    margin-right: 8px;
+}
+
+

@@ -1,0 +1,35 @@
+.main {
+    padding: 100px 16px 40px 16px;
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: end;
+}
+
+.actions {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.actions>div {
+    display: inline-flex;
+    align-items: center;
+}
+
+.price {
+    margin-right: 40px;
+}
+
+.price>span {
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.price svg {
+    width: 35px;
+    height: auto;
+}

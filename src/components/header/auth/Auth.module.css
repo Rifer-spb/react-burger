@@ -1,0 +1,13 @@
+.authBtn {
+    display: inline-block;
+    padding: 20px 0;
+}
+
+.authBtn a {
+    text-decoration: none;
+    display: flex;
+}
+
+.authBtn a>svg {
+    margin-right: 8px;
+}
