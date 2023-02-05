@@ -1,55 +1,66 @@
 import React from "react";
-import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
+import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import style from './BurgerConstructor.module.css';
-
-/**
- * Функционал не реализовывал. В задаче пока об этом не было написано. Пойа что вывел просто html-ем
- * */
+import PropTypes from "prop-types";
+import BurgerIngredients from "../burgerIngredients/BurgerIngredients";
 
 class BurgerConstructor extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            first: this.getElement(props.selected.first),
+            middle: this.getElements(props.selected.middle),
+            last: this.getElement(props.selected.last)
+        }
+    }
+
+    getElement(id) {
+        return this.props.items.find(item => item['_id'] === id);
+    }
+
+    getElements(ids) {
+        let elements = [];
+        for (let i=0; i<ids.length; i++) {
+            elements.push(this.props.items.find(item => item['_id'] === ids[i]));
+        }
+        return elements;
+    }
+
     render() {
         return (
             <div className={style.main}>
                 <div className={style.items}>
-                    <ConstructorElement
-                        type="top"
-                        isLocked={true}
-                        text="Краторная булка N-200i (верх)"
-                        price={1255}
-                        thumbnail='https://code.s3.yandex.net/react/code/bun-02.png'
-                    />
-                    <ConstructorElement
-                        text="Соус традиционный галактический"
-                        price={15}
-                        thumbnail='https://code.s3.yandex.net/react/code/sauce-03.png'
-                    />
-                    <ConstructorElement
-                        text="Мясо бессмертных моллюсков Protostomia"
-                        price={1337}
-                        thumbnail='https://code.s3.yandex.net/react/code/meat-02.png'
-                    />
-                    <ConstructorElement
-                        text="Плоды Фалленианского дерева"
-                        price={874}
-                        thumbnail='https://code.s3.yandex.net/react/code/sp_1.png'
-                    />
-                    <ConstructorElement
-                        text="Хрустящие минеральные кольца"
-                        price={300}
-                        thumbnail='https://code.s3.yandex.net/react/code/mineral_rings.png'
-                    />
-                    <ConstructorElement
-                        text="Хрустящие минеральные кольца"
-                        price={300}
-                        thumbnail='https://code.s3.yandex.net/react/code/mineral_rings.png'
-                    />
-                    <ConstructorElement
-                        type="bottom"
-                        isLocked={true}
-                        text="Краторная булка N-200i (верх)"
-                        price={1255}
-                        thumbnail='https://code.s3.yandex.net/react/code/bun-02.png'
-                    />
+                    <section className={style.first}>
+                        <ConstructorElement
+                            type="top"
+                            isLocked={true}
+                            text={this.state.first.name}
+                            price={this.state.first.price}
+                            thumbnail={this.state.first.image}
+                        />
+                    </section>
+                    <section className={style.middle}>
+                        {this.state.middle.map(item =>
+                            <div key={item._id}>
+                                <DragIcon type="primary" />
+                                <ConstructorElement
+                                    text={item.name}
+                                    price={item.price}
+                                    thumbnail={item.image}
+                                />
+                            </div>
+                        )}
+                    </section>
+                    <section className={style.last}>
+                        <ConstructorElement
+                            type="bottom"
+                            isLocked={true}
+                            text={this.state.last.name}
+                            price={this.state.last.price}
+                            thumbnail={this.state.last.image}
+                        />
+                    </section>
                 </div>
                 <section className={style.actions}>
                     <div>
@@ -66,5 +77,9 @@ class BurgerConstructor extends React.Component {
         );
     }
 }
+
+BurgerIngredients.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.object).isRequired
+};
 
 export default BurgerConstructor

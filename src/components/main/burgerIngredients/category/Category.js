@@ -10,7 +10,7 @@ class Category extends React.Component {
             <div>
                 <h2 className="text_type_main-medium">{this.props.category.name}</h2>
                 <div className={style.items}>
-                    {this.props.items.map((item,index) => <Item key={index} item={item} /> )}
+                    {this.props.items.map(item => <Item key={item._id} item={item} /> )}
                 </div>
             </div>
         );
@@ -19,7 +19,7 @@ class Category extends React.Component {
 
 Category.propTypes = {
   category: PropTypes.object.isRequired,
-  items: PropTypes.arrayOf(PropTypes.object)
+  items: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default Category

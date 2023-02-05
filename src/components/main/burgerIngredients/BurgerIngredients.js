@@ -32,8 +32,8 @@ class BurgerIngredients extends React.Component {
             <div>
                 <h1 className={style.h1 + " text_type_main-medium"}>Соберите бургер</h1>
                 <div className={style.tabs}>
-                    {this.state.categories.map((item,index) =>
-                        <Tab key={index} value={item.id} active={this.state.currentTab === item.id} onClick={this.selectItem}>
+                    {this.state.categories.map(item =>
+                        <Tab key={item.id} value={item.id} active={this.state.currentTab === item.id} onClick={this.selectItem}>
                             {item.name}
                         </Tab>
                     )}
@@ -47,7 +47,7 @@ class BurgerIngredients extends React.Component {
 }
 
 BurgerIngredients.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object)
+    items: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default BurgerIngredients
