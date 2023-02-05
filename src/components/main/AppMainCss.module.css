@@ -1,0 +1,14 @@
+.main {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.cols {
+    display: flex;
+    align-items: normal;
+}
+
+.cols>div {
+    width: 50%;
+    padding-bottom: 50px;
+}

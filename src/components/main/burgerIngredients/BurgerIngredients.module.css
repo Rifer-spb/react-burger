@@ -1,0 +1,27 @@
+.h1 {
+   margin: 40px 0 20px;
+}
+
+.tabs {
+   display: flex;
+   margin-bottom: 40px;
+}
+
+.tabs>div {
+   width: 33%;
+}
+
+.categories {
+   max-height: 726px;
+   overflow-y: auto;
+}
+
+.categories::-webkit-scrollbar {
+   width: 12px;
+}
+.categories::-webkit-scrollbar-track {
+   background: #2F2F37;
+}
+.categories::-webkit-scrollbar-thumb {
+   background-color: #8585AD;
+}

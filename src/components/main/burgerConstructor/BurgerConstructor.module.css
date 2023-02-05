@@ -1,0 +1,66 @@
+.main {
+    padding: 100px 16px 40px 16px;
+}
+
+.items {
+    text-align: right;
+}
+
+.actions {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.actions>div {
+    display: inline-flex;
+    align-items: center;
+}
+
+.price {
+    margin-right: 40px;
+}
+
+.price>span {
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.price svg {
+    width: 35px;
+    height: auto;
+}
+
+.first {
+    margin-right: 16px;
+    margin-bottom: 10px;
+}
+
+.last {
+    margin-right: 16px;
+    margin-top: 10px;
+}
+
+.middle {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 350px;
+    overflow-y: scroll;
+}
+
+.middle::-webkit-scrollbar {
+    width: 8px;
+}
+.middle::-webkit-scrollbar-track {
+    background: #2F2F37;
+}
+.middle::-webkit-scrollbar-thumb {
+    background-color: #8585AD;
+}
+
+.middle>div {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}

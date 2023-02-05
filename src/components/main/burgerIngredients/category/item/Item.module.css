@@ -1,0 +1,21 @@
+.item {
+    text-align: center;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    position: relative;
+}
+
+.price {
+    margin: 4px auto;
+    display: inline-flex;
+    align-items: center;
+}
+
+.price>svg {
+    margin-left: 8px;
+}
+
+.h3 {
+    margin-bottom: 30px;
+}
