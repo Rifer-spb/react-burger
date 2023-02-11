@@ -4,6 +4,7 @@
     vertical-align: top;
     width: 50%;
     position: relative;
+    cursor: pointer;
 }
 
 .price {

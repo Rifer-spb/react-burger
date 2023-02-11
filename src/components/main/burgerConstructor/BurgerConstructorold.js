@@ -8,7 +8,7 @@ function BurgerConstructor(props) {
 
     const [state, setState] = useState({
         first: null,
-        middle: [],
+        middle: null,
         last: null
     });
 
@@ -28,16 +28,16 @@ function BurgerConstructor(props) {
         setState({
             first: getElement(props.selected.first),
             middle: getElements(props.selected.middle),
-            last: getElement(props.selected.last),
+            last: getElement(props.selected.last)
         });
-    },[]);
+    },[getElement,getElements]);
 
     return (
         <div className={style.main}>
             <div className={style.items}>
-                {
-                    state.first &&
-                    <section className={style.first}>
+                <section className={style.first}>
+                    {
+                        state.first &&
                         <ConstructorElement
                             type="top"
                             isLocked={true}
@@ -45,26 +45,23 @@ function BurgerConstructor(props) {
                             price={state.first.price}
                             thumbnail={state.first.image}
                         />
-                    </section>
-                }
-                {
-                    state.middle.length>0 &&
-                    <section className={style.middle}>
-                        {state.middle.map(item =>
-                            <div key={item._id}>
-                                <DragIcon type="primary" />
-                                <ConstructorElement
-                                    text={item.name}
-                                    price={item.price}
-                                    thumbnail={item.image}
-                                />
-                            </div>
-                        )}
-                    </section>
-                }
-                {
-                    state.last &&
-                    <section className={style.last}>
+                    }
+                </section>
+                <section className={style.middle}>
+                    {state.middle.length && state.middle.map(item =>
+                        <div key={item._id}>
+                            <DragIcon type="primary" />
+                            <ConstructorElement
+                                text={item.name}
+                                price={item.price}
+                                thumbnail={item.image}
+                            />
+                        </div>
+                    )}
+                </section>
+                <section className={style.last}>
+                    {
+                        state.last &&
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
@@ -72,30 +69,25 @@ function BurgerConstructor(props) {
                             price={state.last.price}
                             thumbnail={state.last.image}
                         />
-                    </section>
-                }
-            </div>
-            {
-                state.first &&
-                state.middle.length>0 &&
-                state.last &&
-                <section className={style.actions}>
-                    <div>
-                        <div className={style.price}>
-                            <span className="text_type_digits-medium">610</span>
-                            <CurrencyIcon type="primary" />
-                        </div>
-                        <Button htmlType="button" type="primary" size="medium">
-                            Оформить заказ
-                        </Button>
-                    </div>
+                    }
                 </section>
-            }
+            </div>
+            <section className={style.actions}>
+                <div>
+                    <div className={style.price}>
+                        <span className="text_type_digits-medium">610</span>
+                        <CurrencyIcon type="primary" />
+                    </div>
+                    <Button htmlType="button" type="primary" size="medium">
+                        Оформить заказ
+                    </Button>
+                </div>
+            </section>
         </div>
     );
 }
 
-BurgerConstructor.propTypes = {
+BurgerIngredients.propTypes = {
     ingredients: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 

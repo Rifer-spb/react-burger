@@ -1,53 +1,54 @@
-import React from "react";
+import React, {useState} from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
-import PropTypes from "prop-types";
 
-class BurgerIngredients extends React.Component {
+function BurgerIngredients(props) {
 
-    state = {
-        currentTab: 'bun',
+    const [state, setState] = useState({
+        currentCategory: 'bun',
         categories: [
             {id: 'bun', name:'Булки'},
             {id: 'sauce', name:'Соусы'},
             {id: 'main', name:'Начинки'}
         ]
+    });
+
+    const selectItem = (value) => {
+        setState({
+            ...state,
+            currentCategory: value
+        });
     };
 
-    selectItem = (value) => {
-        this.setState({currentTab: value});
+    const getCategory = () => {
+        return state.categories.find(category => category.id === state.currentCategory);
     };
 
-    getCategory() {
-        return this.state.categories.find(category => category.id === this.state.currentTab);
+    const getCategoryItems = () => {
+        return props.items.filter(item => item.type === state.currentCategory);
     };
 
-    getCategoryItems() {
-        return this.props.items.filter(item => item.type === this.state.currentTab);
-    };
-
-    render() {
-        return(
-            <div>
-                <h1 className={style.h1 + " text_type_main-medium"}>Соберите бургер</h1>
-                <div className={style.tabs}>
-                    {this.state.categories.map(item =>
-                        <Tab key={item.id} value={item.id} active={this.state.currentTab === item.id} onClick={this.selectItem}>
-                            {item.name}
-                        </Tab>
-                    )}
-                </div>
-                <div className={style.categories}>
-                    <Category category={this.getCategory()} items={this.getCategoryItems()} />
-                </div>
+    return(
+        <div>
+            <h1 className={style.h1 + " text_type_main-medium"}>Соберите бургер</h1>
+            <div className={style.tabs}>
+                {state.categories.map(item =>
+                    <Tab
+                        key={item.id}
+                        value={item.id}
+                        active={state.currentCategory === item.id}
+                        onClick={selectItem}
+                    >
+                        {item.name}
+                    </Tab>
+                )}
             </div>
-        );
-    }
+            <div className={style.categories}>
+                <Category category={getCategory()} items={getCategoryItems()} />
+            </div>
+        </div>
+    );
 }
-
-BurgerIngredients.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object).isRequired
-};
 
 export default BurgerIngredients

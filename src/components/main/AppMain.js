@@ -1,38 +1,38 @@
-import React from "react";
+import React, {useState} from "react";
+import PropTypes from "prop-types";
 import style from './AppMainCss.module.css';
 import BurgerIngredients from "./burgerIngredients/BurgerIngredients";
 import BurgerConstructor from './burgerConstructor/BurgerConstructor';
 
-class AppMain extends React.Component {
+function AppMain(props) {
 
-    state = {
+    const [state, setState] = useState({
         selected: {
-            first: '60666c42cc7b410027a1a9b1',
-            middle: [
-                '60666c42cc7b410027a1a9b9',
-                '60666c42cc7b410027a1a9b4',
-                '60666c42cc7b410027a1a9bc',
-                '60666c42cc7b410027a1a9bb',
-                '60666c42cc7b410027a1a9ba'
-            ],
-            last: '60666c42cc7b410027a1a9b1',
+            first: null,
+            middle: [],
+            last: null,
         }
-    };
+    });
 
-    render() {
-        return(
-            <main className={style.main}>
-                <div className={style.cols}>
-                    <div>
-                        <BurgerIngredients items={this.props.data}/>
-                    </div>
-                    <div>
-                        <BurgerConstructor items={this.props.data} selected={this.state.selected} />
-                    </div>
+    return(
+        <main className={style.main}>
+            <div className={style.cols}>
+                <div>
+                    <BurgerIngredients items={props.ingredients}/>
                 </div>
-            </main>
-        );
-    }
+                <div>
+                    {
+                        props.ingredients.length>0 &&
+                        <BurgerConstructor ingredients={props.ingredients} selected={state.selected} />
+                    }
+                </div>
+            </div>
+        </main>
+    );
 }
+
+PropTypes.propTypes = {
+    ingredients: PropTypes.arrayOf(PropTypes.object).isRequired
+};
 
 export default AppMain
