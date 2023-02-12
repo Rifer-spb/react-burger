@@ -13,19 +13,17 @@ function App() {
     });
 
     useEffect(() => {
-        try {
-            getIngredients()
-                .then(response => {
-                    if (response.ok) {
-                        return response.json()
-                    }
-                    throw new Error('Error load ingredients data');
-                })
-                .then(data => setState({...state, ingredients: data.data}))
-                .catch((error) => {
-                    setState({...state, hasError: true, errorMessage: error.message});
-                });
-        } catch (err) {}
+        getIngredients()
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new Error('Error load ingredients data');
+            })
+            .then(data => setState({...state, ingredients: data.data}))
+            .catch((error) => {
+                setState({...state, hasError: true, errorMessage: error.message});
+            });
     },[]);
 
     return (
