@@ -4,13 +4,19 @@ import style from './AppMainCss.module.css';
 import BurgerIngredients from "./burgerIngredients/BurgerIngredients";
 import BurgerConstructor from './burgerConstructor/BurgerConstructor';
 
-function AppMain(props) {
+function AppMain({ingredients}) {
 
     const [state, setState] = useState({
         selected: {
-            first: null,
-            middle: [],
-            last: null,
+            first: '60d3b41abdacab0026a733c6',
+            middle: [
+                '60d3b41abdacab0026a733cc',
+                '60d3b41abdacab0026a733c8',
+                '60d3b41abdacab0026a733d1',
+                '60d3b41abdacab0026a733cf',
+                '60d3b41abdacab0026a733d4'
+            ],
+            last: '60d3b41abdacab0026a733c6'
         }
     });
 
@@ -18,12 +24,12 @@ function AppMain(props) {
         <main className={style.main}>
             <div className={style.cols}>
                 <div>
-                    <BurgerIngredients items={props.ingredients}/>
+                    <BurgerIngredients items={ingredients}/>
                 </div>
                 <div>
                     {
-                        props.ingredients.length>0 &&
-                        <BurgerConstructor ingredients={props.ingredients} selected={state.selected} />
+                        ingredients.length>0 &&
+                        <BurgerConstructor { ...state.selected } ingredients={ingredients} />
                     }
                 </div>
             </div>

@@ -6,6 +6,56 @@
     text-align: right;
 }
 
+.items>section {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.items>section>div {
+    display: inline-block;
+    width: 100%;
+    max-width: 536px;
+    position: relative;
+}
+
+.items>section>div>svg {
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    left: -24px;
+}
+
+.items>section>div {
+    margin-bottom: 16px;
+}
+
+.items>section>div:last-child {
+    margin-bottom: 0;
+}
+
+.middle {
+    max-height: 350px;
+    overflow-y: scroll;
+}
+
+.middle::-webkit-scrollbar {
+    width: 8px;
+}
+.middle::-webkit-scrollbar-track {
+    background: #2F2F37;
+}
+.middle::-webkit-scrollbar-thumb {
+    background-color: #8585AD;
+}
+
+.middle {
+    right: -16px;
+}
+
+.middle>div {
+    margin-right: 8px;
+}
+
 .actions {
     margin-top: 40px;
     text-align: right;
@@ -29,38 +79,4 @@
 .price svg {
     width: 35px;
     height: auto;
-}
-
-.first {
-    margin-right: 16px;
-    margin-bottom: 10px;
-}
-
-.last {
-    margin-right: 16px;
-    margin-top: 10px;
-}
-
-.middle {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 350px;
-    overflow-y: scroll;
-}
-
-.middle::-webkit-scrollbar {
-    width: 8px;
-}
-.middle::-webkit-scrollbar-track {
-    background: #2F2F37;
-}
-.middle::-webkit-scrollbar-thumb {
-    background-color: #8585AD;
-}
-
-.middle>div {
-    display: flex;
-    align-items: center;
-    margin-right: 8px;
 }

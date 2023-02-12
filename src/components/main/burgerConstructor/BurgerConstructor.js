@@ -2,33 +2,49 @@ import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import BurgerIngredients from "../burgerIngredients/BurgerIngredients";
+import Modal from "../../common/modal/Modal";
+import OrderDetails from "./orderDetails/OrderDetails";
 
-function BurgerConstructor(props) {
+function BurgerConstructor({ first, middle, last, ingredients }) {
 
     const [state, setState] = useState({
         first: null,
         middle: [],
-        last: null
+        last: null,
+        orderDetailsPopup: false
     });
 
     const getElement = (id) => {
-        return props.ingredients.find(item => item['_id'] === id);
+        return ingredients.find(item => item['_id'] === id);
     };
 
     const getElements = (ids) => {
         let elements = [];
         for (let i=0; i<ids.length; i++) {
-            elements.push(props.ingredients.find(item => item['_id'] === ids[i]));
+            elements.push(ingredients.find(item => item['_id'] === ids[i]));
         }
         return elements;
     };
 
+    const handleCreateOrderMouseClick = () => {
+        setState({
+            ...state,
+            orderDetailsPopup: true
+        });
+    };
+
+    const OrderDetailsPopupClose = () => {
+        setState({
+            ...state,
+            orderDetailsPopup: false
+        });
+    };
+
     useEffect(() => {
         setState({
-            first: getElement(props.selected.first),
-            middle: getElements(props.selected.middle),
-            last: getElement(props.selected.last),
+            first: getElement(first),
+            middle: getElements(middle),
+            last: getElement(last),
         });
     },[]);
 
@@ -37,7 +53,7 @@ function BurgerConstructor(props) {
             <div className={style.items}>
                 {
                     state.first &&
-                    <section className={style.first}>
+                    <section>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
@@ -64,7 +80,7 @@ function BurgerConstructor(props) {
                 }
                 {
                     state.last &&
-                    <section className={style.last}>
+                    <section>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
@@ -76,27 +92,36 @@ function BurgerConstructor(props) {
                 }
             </div>
             {
-                state.first &&
-                state.middle.length>0 &&
-                state.last &&
-                <section className={style.actions}>
-                    <div>
-                        <div className={style.price}>
-                            <span className="text_type_digits-medium">610</span>
-                            <CurrencyIcon type="primary" />
+                state.first && state.middle.length>0 && state.last &&
+                <>
+                    <section className={style.actions}>
+                        <div>
+                            <div className={style.price}>
+                                <span className="text_type_digits-medium">610</span>
+                                <CurrencyIcon type="primary" />
+                            </div>
+                            <Button htmlType="button" type="primary" size="medium" onClick={handleCreateOrderMouseClick}>
+                                Оформить заказ
+                            </Button>
                         </div>
-                        <Button htmlType="button" type="primary" size="medium">
-                            Оформить заказ
-                        </Button>
-                    </div>
-                </section>
+                    </section>
+                    {
+                        state.orderDetailsPopup &&
+                        <Modal onClose={OrderDetailsPopupClose} title="Детали ингредиента">
+                            <OrderDetails />
+                        </Modal>
+                    }
+                </>
             }
         </div>
     );
 }
 
 BurgerConstructor.propTypes = {
-    ingredients: PropTypes.arrayOf(PropTypes.object).isRequired
+    ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
+    first: PropTypes.PropTypes.string.isRequired,
+    middle: PropTypes.arrayOf(PropTypes.string).isRequired,
+    last: PropTypes.PropTypes.string.isRequired
 };
 
 export default BurgerConstructor

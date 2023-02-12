@@ -5,7 +5,7 @@
     border: 1px solid #25254D;
     width: 720px;
     position: fixed;
-    top: 20%;
+    top: 10%;
     left: 50%;
     z-index: 2;
     margin-left: -400px;
@@ -29,11 +29,13 @@
 .header {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .header>h1 {
     width: 100%;
     padding: 10px 0;
+    text-align: left;
 }
 
 .header>.close {
