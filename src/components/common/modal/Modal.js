@@ -7,20 +7,20 @@ const modalRoot = document.getElementById("modal");
 
 const ModalOverlay = (props) => {
     return (
-        <div onClick={props.onClick} className={style.overlay}>&nbsp;</div>
+        <div onClick={props.onClick} className={style.overlay}/>
     );
 };
 
 function Modal(props) {
 
     useEffect(() => {
-        document.addEventListener("keydown", HandleKeyDown, false);
+        document.addEventListener("keydown", handleKeyDown, false);
         return () => {
-            document.removeEventListener("mousemove", HandleKeyDown);
+            document.removeEventListener("keydown", handleKeyDown);
         }
     },[]);
 
-    const HandleKeyDown = (event) => {
+    const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
             props.onClose();
         }

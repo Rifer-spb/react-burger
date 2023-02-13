@@ -37,7 +37,7 @@ function AppMain({ingredients}) {
     );
 }
 
-PropTypes.propTypes = {
+AppMain.propTypes = {
     ingredients: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 

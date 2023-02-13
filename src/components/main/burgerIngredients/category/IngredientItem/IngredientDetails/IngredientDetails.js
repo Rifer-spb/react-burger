@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 function IngredientDetails({item}) {
     return (
         <div className={style.itemInfo}>
-            <img src={item.image_large} className={style.img} />
+            <img src={item.image_large} className={style.img} alt={item.name} />
             <h2 className={style.h2 + ' text_type_main-medium'}>{item.name}</h2>
             <div className={style.info}>
                 <div>

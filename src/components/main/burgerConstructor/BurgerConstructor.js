@@ -66,7 +66,7 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
                 {
                     state.middle.length>0 &&
                     <section className={style.middle}>
-                        {state.middle.map(item =>
+                        {state.middle.map(item => (
                             <div key={item._id}>
                                 <DragIcon type="primary" />
                                 <ConstructorElement
@@ -75,7 +75,7 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
                                     thumbnail={item.image}
                                 />
                             </div>
-                        )}
+                        ))}
                     </section>
                 }
                 {
@@ -107,7 +107,7 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
                     </section>
                     {
                         state.orderDetailsPopup &&
-                        <Modal onClose={OrderDetailsPopupClose} title="Детали ингредиента">
+                        <Modal onClose={OrderDetailsPopupClose}>
                             <OrderDetails />
                         </Modal>
                     }

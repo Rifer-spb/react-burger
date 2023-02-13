@@ -34,7 +34,7 @@ function BurgerIngredients(props) {
         <div>
             <h1 className={style.h1 + " text_type_main-medium"}>Соберите бургер</h1>
             <div className={style.tabs}>
-                {state.categories.map(item =>
+                {state.categories.map(item => (
                     <Tab
                         key={item.id}
                         value={item.id}
@@ -43,7 +43,7 @@ function BurgerIngredients(props) {
                     >
                         {item.name}
                     </Tab>
-                )}
+                ))}
             </div>
             <div className={style.categories}>
                 <Category category={getCategory()} items={getCategoryItems()} />
