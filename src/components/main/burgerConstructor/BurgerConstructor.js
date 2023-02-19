@@ -1,72 +1,68 @@
-import React, {useEffect, useState} from "react";
-import PropTypes from "prop-types";
+import React, {useEffect, useState, useContext} from "react";
 import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
+import { DataContext, SelectedContext } from "../../services/ingredientsContext";
 
-function BurgerConstructor({ first, middle, last, ingredients }) {
+function BurgerConstructor() {
 
-    const [state, setState] = useState({
-        first: null,
-        middle: [],
-        last: null,
-        orderDetailsPopup: false
-    });
-
-    const getElement = (id) => {
-        return ingredients.find(item => item['_id'] === id);
-    };
-
-    const getElements = (ids) => {
-        let elements = [];
-        for (let i=0; i<ids.length; i++) {
-            elements.push(ingredients.find(item => item['_id'] === ids[i]));
-        }
-        return elements;
-    };
+    const { data } = useContext(DataContext);
+    const { selected } = useContext(SelectedContext);
+    const [ top, setTop ] = useState(null);
+    const [ middle, setMiddle ] = useState([]);
+    const [ bottom, setBottom ] = useState(null);
+    const [ popup, showPopup ] = useState(false);
+    const [ sum, setSum ] = useState(0);
 
     const handleCreateOrderMouseClick = () => {
-        setState({
-            ...state,
-            orderDetailsPopup: true
-        });
+        showPopup(true);
     };
 
     const OrderDetailsPopupClose = () => {
-        setState({
-            ...state,
-            orderDetailsPopup: false
+        showPopup(false);
+    };
+
+    const init = () => {
+        const ingredients = selected.map(id => {
+            return data.find(item => item['_id'] === id);
         });
+        const bun = ingredients.find(item => item.type === 'bun');
+        setTop(bun);
+        setMiddle(
+            ingredients.filter(item => item.type !== 'bun')
+        );
+        setBottom(bun);
+        let sum = 0;
+        ingredients.map(item => sum += item.price);
+        setSum(sum);
     };
 
     useEffect(() => {
-        setState({
-            first: getElement(first),
-            middle: getElements(middle),
-            last: getElement(last),
-        });
-    },[]);
+        if (data.length) {
+            init();
+        }
+    },[data]);
 
     return (
         <div className={style.main}>
             <div className={style.items}>
                 {
-                    state.first &&
+                    top &&
                     <section>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={state.first.name}
-                            price={state.first.price}
-                            thumbnail={state.first.image}
+                            text={top.name + ' (вверх)'}
+                            price={top.price}
+                            thumbnail={top.image}
                         />
                     </section>
                 }
                 {
-                    state.middle.length>0 &&
+                    middle.length>0 &&
                     <section className={style.middle}>
-                        {state.middle.map(item => (
+                        {middle.map(item => (
                             <div key={item._id}>
                                 <DragIcon type="primary" />
                                 <ConstructorElement
@@ -79,25 +75,25 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
                     </section>
                 }
                 {
-                    state.last &&
+                    bottom &&
                     <section>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={state.last.name}
-                            price={state.last.price}
-                            thumbnail={state.last.image}
+                            text={bottom.name + ' (низ)'}
+                            price={bottom.price}
+                            thumbnail={bottom.image}
                         />
                     </section>
                 }
             </div>
             {
-                state.first && state.middle.length>0 && state.last &&
+                top && middle.length>0 && bottom &&
                 <>
                     <section className={style.actions}>
                         <div>
                             <div className={style.price}>
-                                <span className="text_type_digits-medium">610</span>
+                                <span className="text_type_digits-medium">{sum}</span>
                                 <CurrencyIcon type="primary" />
                             </div>
                             <Button htmlType="button" type="primary" size="medium" onClick={handleCreateOrderMouseClick}>
@@ -106,7 +102,7 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
                         </div>
                     </section>
                     {
-                        state.orderDetailsPopup &&
+                        popup &&
                         <Modal onClose={OrderDetailsPopupClose}>
                             <OrderDetails />
                         </Modal>
@@ -116,12 +112,5 @@ function BurgerConstructor({ first, middle, last, ingredients }) {
         </div>
     );
 }
-
-BurgerConstructor.propTypes = {
-    ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
-    first: PropTypes.PropTypes.string.isRequired,
-    middle: PropTypes.arrayOf(PropTypes.string).isRequired,
-    last: PropTypes.PropTypes.string.isRequired
-};
 
 export default BurgerConstructor

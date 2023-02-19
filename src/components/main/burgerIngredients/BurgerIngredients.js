@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
-import PropTypes from "prop-types";
+import { DataContext } from "../../services/ingredientsContext";
 
-function BurgerIngredients(props) {
+function BurgerIngredients() {
 
+    const {data, setData} = useContext(DataContext);
     const [state, setState] = useState({
         currentCategory: 'bun',
         categories: [
@@ -27,7 +28,7 @@ function BurgerIngredients(props) {
     };
 
     const getCategoryItems = () => {
-        return props.items.filter(item => item.type === state.currentCategory);
+        return data.filter(item => item.type === state.currentCategory);
     };
 
     return(
@@ -45,15 +46,13 @@ function BurgerIngredients(props) {
                     </Tab>
                 ))}
             </div>
-            <div className={style.categories}>
-                <Category category={getCategory()} items={getCategoryItems()} />
-            </div>
+            {
+                <div className={style.categories}>
+                    <Category category={getCategory()} items={getCategoryItems()} />
+                </div>
+            }
         </div>
     );
 }
-
-PropTypes.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object).isRequired
-};
 
 export default BurgerIngredients
