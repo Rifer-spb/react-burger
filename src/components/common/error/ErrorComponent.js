@@ -10,7 +10,7 @@ function ErrorComponent({text}) {
     );
 }
 
-PropTypes.propTypes = {
+ErrorComponent.propTypes = {
     text: PropTypes.string.isRequired
 };
 

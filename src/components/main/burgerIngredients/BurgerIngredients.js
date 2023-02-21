@@ -1,13 +1,14 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
-import PropTypes from "prop-types";
+import { DataContext } from "../../../utils/services/ingredientsContext";
 
-function BurgerIngredients(props) {
+function BurgerIngredients() {
 
+    const {data, setData} = useContext(DataContext);
     const [state, setState] = useState({
-        currentCategory: 'bun',
+        currentCategory: 'all',
         categories: [
             {id: 'bun', name:'Булки'},
             {id: 'sauce', name:'Соусы'},
@@ -22,12 +23,12 @@ function BurgerIngredients(props) {
         });
     };
 
-    const getCategory = () => {
-        return state.categories.find(category => category.id === state.currentCategory);
+    const getCategory = (currentCategory) => {
+        return state.categories.find(category => category.id === currentCategory);
     };
 
-    const getCategoryItems = () => {
-        return props.items.filter(item => item.type === state.currentCategory);
+    const getCategoryItems = (currentCategory) => {
+        return data.filter(item => item.type === currentCategory);
     };
 
     return(
@@ -45,15 +46,19 @@ function BurgerIngredients(props) {
                     </Tab>
                 ))}
             </div>
-            <div className={style.categories}>
-                <Category category={getCategory()} items={getCategoryItems()} />
-            </div>
+            {
+                <div className={style.categories}>
+                    {
+                        state.currentCategory === 'all' ?
+                        state.categories.map(category =>
+                            <Category category={getCategory(category.id)} key={category.id} items={getCategoryItems(category.id)} />
+                        ) :
+                        <Category category={getCategory(state.currentCategory)} items={getCategoryItems(state.currentCategory)} />
+                    }
+                </div>
+            }
         </div>
     );
 }
-
-PropTypes.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object).isRequired
-};
 
 export default BurgerIngredients
