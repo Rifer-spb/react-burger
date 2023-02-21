@@ -74,7 +74,7 @@ function BurgerConstructor() {
         if (data.length) {
             init();
         }
-    },[data]);
+    },[data, selected]);
 
     return (
         <div className={style.main}>
