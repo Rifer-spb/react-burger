@@ -3,39 +3,71 @@ import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
-import { DataContext, SelectedContext } from "../../services/ingredientsContext";
+import { DataContext, SelectedContext, OrderContext } from "../../services/ingredientsContext";
+import { createOrder } from "../../api/api";
 
 function BurgerConstructor() {
 
     const { data } = useContext(DataContext);
     const { selected } = useContext(SelectedContext);
+    const { orderState, orderDispatcher } = useContext(OrderContext);
     const [ top, setTop ] = useState(null);
     const [ middle, setMiddle ] = useState([]);
     const [ bottom, setBottom ] = useState(null);
     const [ popup, showPopup ] = useState(false);
-    const [ sum, setSum ] = useState(0);
-
-    const handleCreateOrderMouseClick = () => {
-        showPopup(true);
-    };
+    const [ ingredients, setIngredients ] = useState([]);
+    const [error, setError] = useState({
+        hasError: false,
+        errorMessage: ''
+    });
 
     const OrderDetailsPopupClose = () => {
         showPopup(false);
     };
 
     const init = () => {
-        const ingredients = selected.map(id => {
+        const items = selected.map(id => {
             return data.find(item => item['_id'] === id);
         });
-        const bun = ingredients.find(item => item.type === 'bun');
+        const bun = items.find(item => item.type === 'bun');
         setTop(bun);
         setMiddle(
-            ingredients.filter(item => item.type !== 'bun')
+            items.filter(item => item.type !== 'bun')
         );
         setBottom(bun);
         let sum = 0;
-        ingredients.map(item => sum += item.price);
-        setSum(sum);
+        items.map(item => sum += item.price);
+        orderDispatcher({
+            type: 'set',
+            payload: { price: sum }
+        });
+        setIngredients(items);
+    };
+
+    const handleSubmitCreateOrder = () => {
+        const fields = {
+            ingredients: ingredients.map(item => item['_id'])
+        };
+        createOrder(fields)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new Error('Error create order');
+            })
+            .then(response => {
+                orderDispatcher({
+                    type: 'set',
+                    payload: {
+                        name: response.name, number: response.order.number
+                    }
+                });
+                showPopup(true);
+            })
+            .catch((error) => {
+                setError({hasError: true, errorMessage: error.message})
+                showPopup(true);
+            });
     };
 
     useEffect(() => {
@@ -93,10 +125,10 @@ function BurgerConstructor() {
                     <section className={style.actions}>
                         <div>
                             <div className={style.price}>
-                                <span className="text_type_digits-medium">{sum}</span>
+                                <span className="text_type_digits-medium">{orderState.price}</span>
                                 <CurrencyIcon type="primary" />
                             </div>
-                            <Button htmlType="button" type="primary" size="medium" onClick={handleCreateOrderMouseClick}>
+                            <Button htmlType="button" type="primary" size="medium" onClick={handleSubmitCreateOrder}>
                                 Оформить заказ
                             </Button>
                         </div>
@@ -104,7 +136,7 @@ function BurgerConstructor() {
                     {
                         popup &&
                         <Modal onClose={OrderDetailsPopupClose}>
-                            <OrderDetails />
+                            <OrderDetails number={orderState.number} error={error} />
                         </Modal>
                     }
                 </>
