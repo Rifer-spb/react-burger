@@ -1,9 +1,10 @@
 import React, {useState, useEffect, useReducer} from 'react';
-import { getIngredients } from "../api/api";
+import { getIngredients } from "../../utils/api";
 import AppHeader from "../header/AppHeader";
 import AppMain from '../main/AppMain';
 import ErrorComponent from "../common/error/ErrorComponent";
-import { DataContext, SelectedContext, OrderContext } from '../services/ingredientsContext';
+import { DataContext, SelectedContext, OrderContext } from '../../utils/services/ingredientsContext';
+import { checkResponse } from "../../utils/services/helperRequest";
 
 const orderDefault = {
     name: '',
@@ -54,12 +55,7 @@ function App() {
 
     useEffect(() => {
         getIngredients()
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-                throw new Error('Error load ingredients data');
-            })
+            .then(response => checkResponse(response))
             .then(response => {
                 setData(response.data);
             })
@@ -74,22 +70,20 @@ function App() {
         }
     },[data]);
 
+    if(error.hasError && error.errorMessage) {
+        return <ErrorComponent text={error.errorMessage} />
+    }
+
     return (
         <div>
-            {
-                (error.hasError && error.errorMessage) ?
-                <ErrorComponent text={error.errorMessage} /> :
-                <div className="App">
-                    <AppHeader/>
-                    <DataContext.Provider value={{data, setData}}>
-                        <SelectedContext.Provider value={{selected, setSelected}}>
-                            <OrderContext.Provider value={{orderState, orderDispatcher}}>
-                                <AppMain />
-                            </OrderContext.Provider>
-                        </SelectedContext.Provider>
-                    </DataContext.Provider>
-                </div>
-            }
+            <AppHeader/>
+            <DataContext.Provider value={{data, setData}}>
+                <SelectedContext.Provider value={{selected, setSelected}}>
+                    <OrderContext.Provider value={{orderState, orderDispatcher}}>
+                        <AppMain />
+                    </OrderContext.Provider>
+                </SelectedContext.Provider>
+            </DataContext.Provider>
         </div>
     );
 }

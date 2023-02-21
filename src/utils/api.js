@@ -1,5 +1,6 @@
-const URL_INGREDIENTS = 'https://norma.nomoreparties.space/api/ingredients';
-const URL_ORDERS = 'https://norma.nomoreparties.space/api/orders';
+const URL_DOMAIN = 'https://norma.nomoreparties.space';
+const URL_INGREDIENTS = URL_DOMAIN + '/api/ingredients';
+const URL_ORDERS = URL_DOMAIN + '/api/orders';
 
 export function getIngredients() {
     return fetch(URL_INGREDIENTS);

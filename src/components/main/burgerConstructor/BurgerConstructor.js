@@ -3,19 +3,18 @@ import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
-import { DataContext, SelectedContext, OrderContext } from "../../services/ingredientsContext";
-import { createOrder } from "../../api/api";
+import { DataContext, SelectedContext, OrderContext } from "../../../utils/services/ingredientsContext";
+import { createOrder } from "../../../utils/api";
+import { checkResponse } from "../../../utils/services/helperRequest";
 
 function BurgerConstructor() {
 
     const { data } = useContext(DataContext);
     const { selected } = useContext(SelectedContext);
     const { orderState, orderDispatcher } = useContext(OrderContext);
-    const [ top, setTop ] = useState(null);
+    const [ bun, setBun ] = useState(null);
     const [ middle, setMiddle ] = useState([]);
-    const [ bottom, setBottom ] = useState(null);
     const [ popup, showPopup ] = useState(false);
-    const [ ingredients, setIngredients ] = useState([]);
     const [error, setError] = useState({
         hasError: false,
         errorMessage: ''
@@ -30,31 +29,29 @@ function BurgerConstructor() {
             return data.find(item => item['_id'] === id);
         });
         const bun = items.find(item => item.type === 'bun');
-        setTop(bun);
+        setBun(bun);
         setMiddle(
             items.filter(item => item.type !== 'bun')
         );
-        setBottom(bun);
         let sum = 0;
         items.map(item => sum += item.price);
         orderDispatcher({
             type: 'set',
             payload: { price: sum }
         });
-        setIngredients(items);
     };
 
     const handleSubmitCreateOrder = () => {
+        const ingredients = [
+            bun['_id'],
+            ...middle.map(item => item['_id']),
+            bun['_id']
+        ];
         const fields = {
-            ingredients: ingredients.map(item => item['_id'])
+            ingredients: ingredients
         };
         createOrder(fields)
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-                throw new Error('Error create order');
-            })
+            .then(response => checkResponse(response))
             .then(response => {
                 orderDispatcher({
                     type: 'set',
@@ -80,14 +77,14 @@ function BurgerConstructor() {
         <div className={style.main}>
             <div className={style.items}>
                 {
-                    top &&
+                    bun &&
                     <section>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={top.name + ' (вверх)'}
-                            price={top.price}
-                            thumbnail={top.image}
+                            text={bun.name + ' (вверх)'}
+                            price={bun.price}
+                            thumbnail={bun.image}
                         />
                     </section>
                 }
@@ -95,7 +92,7 @@ function BurgerConstructor() {
                     middle.length>0 &&
                     <section className={style.middle}>
                         {middle.map(item => (
-                            <div key={item._id}>
+                            <div key={item['_id']}>
                                 <DragIcon type="primary" />
                                 <ConstructorElement
                                     text={item.name}
@@ -107,20 +104,20 @@ function BurgerConstructor() {
                     </section>
                 }
                 {
-                    bottom &&
+                    bun &&
                     <section>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={bottom.name + ' (низ)'}
-                            price={bottom.price}
-                            thumbnail={bottom.image}
+                            text={bun.name + ' (низ)'}
+                            price={bun.price}
+                            thumbnail={bun.image}
                         />
                     </section>
                 }
             </div>
             {
-                top && middle.length>0 && bottom &&
+                bun && middle.length>0 &&
                 <>
                     <section className={style.actions}>
                         <div>

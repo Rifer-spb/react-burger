@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 function OrderDetails({ number, error }) {
     return (
-        <div style={{maxWidth: '520px', margin: '0 auto', textAlign: 'center'}}>
+        <div className={style.details}>
             {
                 error.hasError ?
                 <div>
@@ -30,7 +30,13 @@ function OrderDetails({ number, error }) {
 
 OrderDetails.propTypes = {
     number: PropTypes.number.isRequired,
-    error: PropTypes.object.isRequired,
+    error: PropTypes.shape({
+        number: PropTypes.number.isRequired,
+        error: PropTypes.shape({
+            hasError: PropTypes.bool.isRequired,
+            errorMessage: PropTypes.string.isRequired
+        }).isRequired
+    }).isRequired,
 };
 
 

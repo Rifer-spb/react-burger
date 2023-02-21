@@ -31,7 +31,7 @@ function Category(props) {
             <h2 className="text_type_main-medium">{props.category.name}</h2>
             <div className={style.items}>
                 {props.items.map(item => (
-                    <IngredientItem key={item._id} item={item} handleItemMouseClick={() => handleItemMouseClick(item)} />
+                    <IngredientItem key={item['_id']} item={item} handleItemMouseClick={() => handleItemMouseClick(item)} />
                 ))}
             </div>
             {
