@@ -31,12 +31,9 @@ function OrderDetails({ number, error }) {
 OrderDetails.propTypes = {
     number: PropTypes.number.isRequired,
     error: PropTypes.shape({
-        number: PropTypes.number.isRequired,
-        error: PropTypes.shape({
-            hasError: PropTypes.bool.isRequired,
-            errorMessage: PropTypes.string.isRequired
-        }).isRequired
-    }).isRequired,
+        hasError: PropTypes.bool.isRequired,
+        errorMessage: PropTypes.string.isRequired
+    }).isRequired
 };
 
 
