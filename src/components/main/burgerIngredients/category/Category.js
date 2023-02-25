@@ -1,29 +1,25 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import style from './Category.module.css';
 import IngredientItem from './IngredientItem/IngredientItem';
 import Modal from "../../../common/modal/Modal";
 import IngredientDetails from "./IngredientItem/IngredientDetails/IngredientDetails";
+import { setCurrent } from '../../../../services/slices/ingredientSlice';
+import {useDispatch, useSelector} from "react-redux";
 
 function Category(props) {
 
-    const [state, setState] = useState({
-        currentItem: null,
-        ingredientModal: false
-    });
+    const dispatch = useDispatch();
+    const { currentIngredient } = useSelector(store => ({
+        currentIngredient: store.ingredient.current
+    }));
 
     const handleItemMouseClick = (item) => {
-        setState({
-            currentItem: item,
-            ingredientModal: true
-        });
+        dispatch(setCurrent(item));
     };
 
     const itemPopupClose = () => {
-        setState({
-            currentItem: null,
-            ingredientModal: false
-        });
+        dispatch(setCurrent(null));
     };
 
     return (
@@ -35,9 +31,9 @@ function Category(props) {
                 ))}
             </div>
             {
-                state.ingredientModal &&
+                currentIngredient &&
                 <Modal onClose={itemPopupClose} title="Детали ингредиента">
-                    <IngredientDetails item={state.currentItem} />
+                    <IngredientDetails item={currentIngredient} />
                 </Modal>
             }
         </div>

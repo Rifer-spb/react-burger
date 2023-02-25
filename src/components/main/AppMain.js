@@ -12,7 +12,7 @@ function AppMain() {
                     <BurgerIngredients />
                 </div>
                 <div>
-                    <BurgerConstructor />
+                    <BurgerConstructor/>
                 </div>
             </div>
         </main>

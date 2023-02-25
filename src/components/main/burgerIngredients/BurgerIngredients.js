@@ -1,12 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, {useState, useEffect} from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
-import { DataContext } from "../../../utils/services/ingredientsContext";
+import {useDispatch, useSelector} from "react-redux";
+import ErrorComponent from "../../common/error/ErrorComponent";
+import { loadIngredients } from "../../../services/actions/ingredient";
 
 function BurgerIngredients() {
 
-    const {data, setData} = useContext(DataContext);
+    const dispatch = useDispatch();
+    const { items, requestFailed } = useSelector(store => store.ingredient);
     const [state, setState] = useState({
         currentCategory: 'all',
         categories: [
@@ -28,8 +31,16 @@ function BurgerIngredients() {
     };
 
     const getCategoryItems = (currentCategory) => {
-        return data.filter(item => item.type === currentCategory);
+        return items.filter(item => item.type === currentCategory);
     };
+
+    useEffect(() => {
+        dispatch(loadIngredients());
+    },[]);
+
+    if(requestFailed) {
+        return <ErrorComponent />
+    }
 
     return(
         <div>

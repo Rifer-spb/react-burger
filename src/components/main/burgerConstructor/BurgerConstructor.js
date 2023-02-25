@@ -1,17 +1,27 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, {useEffect, useState} from "react";
 import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
-import { DataContext, SelectedContext, OrderContext } from "../../../utils/services/ingredientsContext";
 import { createOrder } from "../../../utils/api";
 import { checkResponse } from "../../../utils/services/helperRequest";
+import { useDispatch, useSelector } from "react-redux";
+import { setPrice, setOrder } from "../../../services/slices/orderSlice";
 
 function BurgerConstructor() {
 
-    const { data } = useContext(DataContext);
-    const { selected } = useContext(SelectedContext);
-    const { orderState, orderDispatcher } = useContext(OrderContext);
+    const dispatch = useDispatch();
+    const {
+        ingredients,
+        orderId,
+        orderPrice,
+        orderIngredients
+    } = useSelector(store => ({
+        ingredients: store.ingredient.items,
+        orderId: store.order.id,
+        orderPrice: store.order.price,
+        orderIngredients: store.order.ingredients,
+    }));
     const [ bun, setBun ] = useState(null);
     const [ middle, setMiddle ] = useState([]);
     const [ popup, showPopup ] = useState(false);
@@ -25,8 +35,8 @@ function BurgerConstructor() {
     };
 
     const init = () => {
-        const items = selected.map(id => {
-            return data.find(item => item['_id'] === id);
+        const items = orderIngredients.map(id => {
+            return ingredients.find(item => item['_id'] === id);
         });
         const bun = items.find(item => item.type === 'bun');
         setBun(bun);
@@ -35,10 +45,7 @@ function BurgerConstructor() {
         );
         let sum = 0;
         items.map(item => sum += item.price);
-        orderDispatcher({
-            type: 'set',
-            payload: { price: sum }
-        });
+        dispatch(setPrice(sum));
     };
 
     const handleSubmitCreateOrder = () => {
@@ -53,12 +60,10 @@ function BurgerConstructor() {
         createOrder(fields)
             .then(response => checkResponse(response))
             .then(response => {
-                orderDispatcher({
-                    type: 'set',
-                    payload: {
-                        name: response.name, number: response.order.number
-                    }
-                });
+                dispatch(setOrder({
+                    name: response.name,
+                    id: response.order.number
+                }));
                 showPopup(true);
             })
             .catch((error) => {
@@ -68,10 +73,10 @@ function BurgerConstructor() {
     };
 
     useEffect(() => {
-        if (data.length) {
+        if (ingredients.length) {
             init();
         }
-    },[data, selected]);
+    },[ingredients, orderIngredients]);
 
     return (
         <div className={style.main}>
@@ -122,7 +127,7 @@ function BurgerConstructor() {
                     <section className={style.actions}>
                         <div>
                             <div className={style.price}>
-                                <span className="text_type_digits-medium">{orderState.price}</span>
+                                <span className="text_type_digits-medium">{orderPrice}</span>
                                 <CurrencyIcon type="primary" />
                             </div>
                             <Button htmlType="button" type="primary" size="medium" onClick={handleSubmitCreateOrder}>
@@ -133,7 +138,7 @@ function BurgerConstructor() {
                     {
                         popup &&
                         <Modal onClose={OrderDetailsPopupClose}>
-                            <OrderDetails number={orderState.number} error={error} />
+                            <OrderDetails number={orderId} error={error} />
                         </Modal>
                     }
                 </>
