@@ -17,7 +17,7 @@ function BurgerConstructor() {
         orderPrice,
         orderIngredients
     } = useSelector(store => ({
-        ingredients: store.ingredient.items,
+        ingredients: store.ingredient.ingredients,
         orderId: store.order.id,
         orderPrice: store.order.price,
         orderIngredients: store.order.ingredients,

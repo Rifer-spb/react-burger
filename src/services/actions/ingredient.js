@@ -5,7 +5,7 @@ import {
 } from './constants';
 
 import { getIngredients} from "../../utils/api";
-import { loadItems } from "../slices/ingredientSlice";
+import { loadItems, setCurrent } from "../slices/ingredientSlice";
 import { checkResponse } from "../../utils/services/helperRequest";
 
 export function loadIngredients() {
@@ -19,7 +19,7 @@ export function loadIngredients() {
                 if (response && response.success) {
                     dispatch(loadItems({
                         type: LOAD_INGREDIENTS_SUCCESS,
-                        items: response.data
+                        ingredients: response.data
                     }))
                 } else {
                     dispatch(loadItems({
@@ -32,5 +32,11 @@ export function loadIngredients() {
                     type: LOAD_INGREDIENTS_FAILED,
                 }));
             })
+    }
+}
+
+export function addCurrent(items) {
+    return function (dispatch) {
+        dispatch(setCurrent(items));
     }
 }

@@ -6,7 +6,7 @@ import {
 } from '../actions/constants';
 
 const initialState = {
-    items: [],
+    ingredients: [],
     current: null,
     requestLoad: false,
     requestFailed: false
@@ -25,7 +25,7 @@ const ingredientSlice = createSlice({
                     break;
                 }
                 case LOAD_INGREDIENTS_SUCCESS: {
-                    state.items = payload.items;
+                    state.ingredients = payload.ingredients;
                     state.requestLoad = false;
                     break;
                 }
