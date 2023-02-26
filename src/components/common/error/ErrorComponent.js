@@ -1,6 +1,6 @@
 import React from "react";
 import style from './ErrorComponent.module.css';
-import { REQUEST_ERROR } from "../../../utils/services/helperRequest";
+import { REQUEST_ERROR } from "../../../utils/helpers/helperRequest";
 
 function ErrorComponent() {
     return (

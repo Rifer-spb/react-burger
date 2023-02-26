@@ -3,10 +3,10 @@ import style from './BurgerConstructor.module.css';
 import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
-import { createOrder } from "../../../utils/api";
-import { checkResponse } from "../../../utils/services/helperRequest";
 import { useDispatch, useSelector } from "react-redux";
-import { setPrice, setOrder } from "../../../services/slices/orderSlice";
+import {useDrop} from "react-dnd";
+import { setIngredient, deleteIngredient } from "../../../services/actions/order";
+import { create } from "../../../services/actions/order";
 
 function BurgerConstructor() {
 
@@ -15,37 +15,44 @@ function BurgerConstructor() {
         ingredients,
         orderId,
         orderPrice,
-        orderIngredients
+        orderIngredients,
+        requestLoad,
+        requestFailed
     } = useSelector(store => ({
         ingredients: store.ingredient.ingredients,
         orderId: store.order.id,
         orderPrice: store.order.price,
         orderIngredients: store.order.ingredients,
+        requestLoad: store.order.requestLoad,
+        requestFailed: store.order.requestFailed
     }));
     const [ bun, setBun ] = useState(null);
     const [ middle, setMiddle ] = useState([]);
     const [ popup, showPopup ] = useState(false);
-    const [error, setError] = useState({
-        hasError: false,
-        errorMessage: ''
+    const [, dropTarget] = useDrop({
+        accept: "ingredient",
+        drop(item) {
+            dispatch(setIngredient(item['_id']));
+        },
     });
 
     const OrderDetailsPopupClose = () => {
         showPopup(false);
     };
 
+    const handleDeleteIngredient = (event,id) => {
+        dispatch(deleteIngredient(id));
+    };
+
     const init = () => {
-        const items = orderIngredients.map(id => {
-            return ingredients.find(item => item['_id'] === id);
+        const items = orderIngredients.map(item => {
+            return ingredients.find(ingredient => ingredient['_id'] === item.id);
         });
         const bun = items.find(item => item.type === 'bun');
         setBun(bun);
         setMiddle(
             items.filter(item => item.type !== 'bun')
         );
-        let sum = 0;
-        items.map(item => sum += item.price);
-        dispatch(setPrice(sum));
     };
 
     const handleSubmitCreateOrder = () => {
@@ -57,29 +64,18 @@ function BurgerConstructor() {
         const fields = {
             ingredients: ingredients
         };
-        createOrder(fields)
-            .then(response => checkResponse(response))
-            .then(response => {
-                dispatch(setOrder({
-                    name: response.name,
-                    id: response.order.number
-                }));
-                showPopup(true);
-            })
-            .catch((error) => {
-                setError({hasError: true, errorMessage: error.message})
-                showPopup(true);
-            });
+        dispatch(create(fields));
+        showPopup(true);
     };
 
     useEffect(() => {
-        if (ingredients.length) {
+        if (ingredients.length && orderIngredients) {
             init();
         }
     },[ingredients, orderIngredients]);
 
     return (
-        <div className={style.main}>
+        <div className={style.main} ref={dropTarget}>
             <div className={style.items}>
                 {
                     bun &&
@@ -103,6 +99,7 @@ function BurgerConstructor() {
                                     text={item.name}
                                     price={item.price}
                                     thumbnail={item.image}
+                                    handleClose={(e) => handleDeleteIngredient(e,item['_id'])}
                                 />
                             </div>
                         ))}
@@ -138,7 +135,7 @@ function BurgerConstructor() {
                     {
                         popup &&
                         <Modal onClose={OrderDetailsPopupClose}>
-                            <OrderDetails number={orderId} error={error} />
+                            <OrderDetails number={orderId} error={requestFailed} proccess={requestLoad} />
                         </Modal>
                     }
                 </>

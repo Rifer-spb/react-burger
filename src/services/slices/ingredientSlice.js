@@ -34,6 +34,8 @@ const ingredientSlice = createSlice({
                     state.requestLoad = false;
                     break;
                 }
+                default:
+                    break;
             }
         },
         setCurrent(state, action) {
