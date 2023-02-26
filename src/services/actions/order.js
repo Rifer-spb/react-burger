@@ -4,7 +4,7 @@ import {
     CREATE_ORDER_SUCCESS
 } from './constants';
 import { createOrder } from "../../utils/api";
-import { addIngredient, dropIngredient, initPrice, add } from "../slices/orderSlice";
+import { addIngredient, dropIngredient, initPrice, add, sort } from "../slices/orderSlice";
 import {checkResponse} from "../../utils/helpers/helperRequest";
 
 export function setIngredient(id) {
@@ -49,5 +49,11 @@ export function create(fields) {
                 type: CREATE_ORDER_FAILED,
             }));
         })
+    }
+}
+
+export function updateSort(item, fromIndex, toIndex) {
+    return function (dispatch) {
+        dispatch(sort({ item, fromIndex, toIndex }));
     }
 }

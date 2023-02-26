@@ -84,9 +84,17 @@ const orderSlice = createSlice({
                 default:
                     break;
             }
+        },
+        sort(state, action) {
+            const dragItem = action.payload.item;
+            const fromIndex = action.payload.fromIndex;
+            const toIndex = action.payload.toIndex;
+            const sourceCard = state.ingredients.find(item => item.id === dragItem.id);
+            state.ingredients = state.ingredients.filter(item => item.id !== dragItem.id);
+            state.ingredients.splice(toIndex+1, 0, sourceCard);
         }
     },
 });
 
-export const { addIngredient, dropIngredient, add, initPrice } = orderSlice.actions;
+export const { addIngredient, dropIngredient, add, initPrice, sort } = orderSlice.actions;
 export default orderSlice.reducer;

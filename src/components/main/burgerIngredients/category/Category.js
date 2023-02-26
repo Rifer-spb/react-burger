@@ -32,7 +32,6 @@ function Category({category, items, index, setCategoryRef}) {
         return ingredient.count;
     };
 
-
     useEffect(() => {
         setCategoryRef(categoryBlockRef.current, index);
     },[items, setCategoryRef, index]);

@@ -7,6 +7,18 @@
     text-align: right;
 }
 
+.empty {
+    border: 2px dashed #FFF;
+    height: 100%;
+    padding: 100px 0;
+    text-align: center;
+    max-height: 542px;
+}
+
+.empty>h2 {
+    font-size: 20px;
+}
+
 .items>section {
     margin-bottom: 16px;
     position: relative;
@@ -19,11 +31,13 @@
     position: relative;
 }
 
-.items>section>div>svg {
+.items>section>div>svg,
+.items>section>div>div>svg {
     position: absolute;
     top: 50%;
     margin-top: -12px;
     left: -24px;
+    cursor: pointer;
 }
 
 .items>section>div {
@@ -55,6 +69,10 @@
 
 .middle>div {
     margin-right: 8px;
+}
+
+.middle>div>svg {
+    cursor: pointer;
 }
 
 .actions {
