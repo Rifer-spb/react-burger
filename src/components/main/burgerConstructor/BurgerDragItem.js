@@ -1,8 +1,8 @@
 import React, {useRef} from "react";
 import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDrag, useDrop} from "react-dnd";
-import { updateSort } from "../../../services/actions/order";
 import {useDispatch} from "react-redux";
+import { sortItemsOrder } from "../../../services/actions/order";
 
 export function BurgerDragItem({ id, name, price, image, handleDeleteIngredient, index }) {
 
@@ -46,7 +46,8 @@ export function BurgerDragItem({ id, name, price, image, handleDeleteIngredient,
                 return
             }
 
-            dispatch(updateSort(item, dragIndex, hoverIndex));
+            dispatch(sortItemsOrder(dragIndex, hoverIndex));
+            dispatch(sortItemsOrder(dragIndex, hoverIndex));
 
             // Time to actually perform the action
             //moveCard(dragIndex, hoverIndex)
@@ -78,7 +79,7 @@ export function BurgerDragItem({ id, name, price, image, handleDeleteIngredient,
                     text={name}
                     price={price}
                     thumbnail={image}
-                    handleClose={(e) => handleDeleteIngredient(e,id)}
+                    handleClose={(e) => handleDeleteIngredient(e,index)}
                 />
             </div>
         </>

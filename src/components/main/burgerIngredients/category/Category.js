@@ -4,8 +4,8 @@ import style from './Category.module.css';
 import IngredientItem from './IngredientItem/IngredientItem';
 import Modal from "../../../common/modal/Modal";
 import IngredientDetails from "./IngredientItem/IngredientDetails/IngredientDetails";
-import { updateCurrent, clearCurrent } from "../../../../services/actions/ingredient";
 import {useDispatch, useSelector} from "react-redux";
+import { setCurrentIngredient } from "../../../../services/actions/ingredient";
 
 function Category({category, items, index, setCategoryRef}) {
 
@@ -14,22 +14,27 @@ function Category({category, items, index, setCategoryRef}) {
         currentIngredient: store.ingredient.current
     }));
     const categoryBlockRef = useRef();
-    const orderIngredients = useSelector(store => store.order.ingredients);
+    const { orderBun, orderIngredients } = useSelector(store => ({
+        orderBun: store.order.bun,
+        orderIngredients: store.order.ingredients
+    }));
 
     const handleItemMouseClick = (item) => {
-        dispatch(updateCurrent(item));
+        dispatch(setCurrentIngredient(item));
     };
 
     const itemPopupClose = () => {
-        dispatch(clearCurrent(null));
+        dispatch(setCurrentIngredient(null));
     };
 
     const getCount = (id) => {
-        const ingredient = orderIngredients.find(item => item.id === id);
-        if (!ingredient) {
-            return 0;
+        if(orderBun && id === orderBun['_id']) {
+            return 2;
         }
-        return ingredient.count;
+        if(orderIngredients.length) {
+            return orderIngredients.filter(item => item['_id'] === id).length;
+        }
+        return 0;
     };
 
     useEffect(() => {

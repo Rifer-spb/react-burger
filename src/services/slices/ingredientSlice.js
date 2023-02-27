@@ -44,5 +44,5 @@ const ingredientSlice = createSlice({
     },
 });
 
-export const { loadItems, setCurrent } = ingredientSlice.actions;
+export const { loadItems } = ingredientSlice.actions;
 export default ingredientSlice.reducer;

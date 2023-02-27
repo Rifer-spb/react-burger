@@ -5,21 +5,17 @@ import Category from './category/Category';
 import {useDispatch, useSelector} from "react-redux";
 import ErrorComponent from "../../common/error/ErrorComponent";
 import { loadIngredients } from "../../../services/actions/ingredient";
-import { updateCurrent, updateActive } from "../../../services/actions/category";
 
 function BurgerIngredients () {
 
-    const {
-        currentCategory,
-        categories,
-        ingredients,
-        requestFailed
-    } = useSelector(store => ({
-        currentCategory: store.category.current,
-        categories: store.category.categories,
-        ingredients: store.ingredient.ingredients,
-        requestFailed: store.ingredient.requestFailed
-    }));
+    const categories = useRef([
+        { id: 'bun', name: 'Булки', active: false },
+        { id: 'sauce', name: 'Соусы', active: false },
+        { id: 'main', name: 'Начинки', active: false }
+    ]);
+    const { ingredients, requestFailed } = useSelector(
+        store => store.ingredient
+    );
     const dispatch = useDispatch();
     const categoriesRef = useRef();
     const categoryRefs = useRef([]);
@@ -31,12 +27,16 @@ function BurgerIngredients () {
         }
     };
 
-    const selectItem = (value) => {
-        dispatch(updateCurrent(value));
+    const selectItem = (index) => {
+        const categoryElement = categoryRefs.current.find((
+            item,itemIndex) => itemIndex === index
+        );
+        categoryElement.scrollIntoView();
+        window.scroll(0,0);
     };
 
     const getCategory = (current) => {
-        return categories.find(category => category.id === current);
+        return categories.current.find(category => category.id === current);
     };
 
     const getCategoryItems = (current) => {
@@ -46,7 +46,7 @@ function BurgerIngredients () {
     const handleCategoryScroll = () => {
         let minPositions = [];
         categoryRefs.current.map((item) => {
-            const position = item.getBoundingClientRect().bottom-categoriesRef.current.getBoundingClientRect().top;
+            const position = (item.getBoundingClientRect().bottom-categoriesRef.current.getBoundingClientRect().top)-1;
             if(position<0) {
                 minPositions.push(99999999);
             } else {
@@ -57,7 +57,14 @@ function BurgerIngredients () {
         minPositions = minPositions.filter(item => item !== null);
         const minPosition = Math.min(...minPositions);
         const categoryIndex = minPositions.indexOf(minPosition);
-        dispatch(updateActive(categoryIndex));
+        categories.current.map((category, index) => {
+            if(index === categoryIndex) {
+                category.active = true;
+            } else {
+                category.active = false;
+            }
+            return category;
+        });
     };
 
     useEffect(() => {
@@ -73,7 +80,7 @@ function BurgerIngredients () {
                 categoriesRef.current.removeEventListener('scroll', handleCategoryScroll);
             }
         };
-    },[]);
+    },[ingredients]);
 
     if(requestFailed) {
         return <ErrorComponent />
@@ -83,12 +90,13 @@ function BurgerIngredients () {
         <div>
             <h1 className={style.h1 + " text_type_main-medium"}>Соберите бургер</h1>
             <div className={style.tabs}>
-                {categories.map(item => (
+                {categories.current.map((item,index) => (
                     <Tab
                         key={item.id}
                         value={item.id}
-                        active={item.active || currentCategory === item.id}
-                        onClick={selectItem}
+                        active={item.active}
+                        onClick={() => selectItem(index)}
+                        id={item.id}
                     >
                         {item.name}
                     </Tab>
@@ -97,7 +105,7 @@ function BurgerIngredients () {
             {
                 <div ref={categoriesRef} className={style.categories}>
                     {
-                        currentCategory === 'all' ? categories.map((category,index) =>
+                        categories.current.map((category,index) =>
                             <Category
                                 category={getCategory(category.id)}
                                 key={category.id}
@@ -105,12 +113,7 @@ function BurgerIngredients () {
                                 index={index}
                                 setCategoryRef={setCategoryRef}
                             />
-                        ) :
-                        <Category
-                            category={getCategory(currentCategory)}
-                            items={getCategoryItems(currentCategory)}
-                            setCategoryRef={setCategoryRef}
-                        />
+                        )
                     }
                 </div>
             }

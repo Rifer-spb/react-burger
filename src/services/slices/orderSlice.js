@@ -9,6 +9,7 @@ const initialState = {
     id: null,
     name: null,
     price: 0,
+    bun: null,
     ingredients: [],
     view: false,
     requestLoad: false,
@@ -19,49 +20,41 @@ const orderSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
-        addIngredient(state, action) {
+        addItem(state, action) {
             const newIngredient = action.payload;
             if(newIngredient.type === 'bun') {
-                const bun = state.ingredients.find(item => item.type === 'bun');
-                if(!bun) {
-                    state.ingredients.push({
-                        id: newIngredient['_id'],
-                        type: newIngredient.type,
-                        price: newIngredient.price,
-                        count: 2
-                    });
-                } else {
-                    bun.id = newIngredient['_id'];
-                    bun.count = 2;
-                }
+                state.bun = newIngredient;
             } else {
-                const ingredient = state.ingredients.find(item => item.id === newIngredient['_id']);
-                if(!ingredient) {
-                    state.ingredients.push({
-                        id: newIngredient['_id'],
-                        type: newIngredient.type,
-                        price: newIngredient.price,
-                        count: 1
-                    });
-                } else {
-                    ingredient.count++;
-                }
+                state.ingredients.push(newIngredient);
+            }
+            if(state.bun) {
+                orderSlice.caseReducers.updatePrice(state);
             }
         },
-        dropIngredient(state, action) {
-            const ingredient = state.ingredients.find(item => item.id === action.payload);
-            if(ingredient.type === 'bun') return;
-            if(ingredient.count>1) {
-                ingredient.count--;
-            } else {
-                state.ingredients = state.ingredients.filter(item => item.id !== action.payload);
+        dropItem(state, action) {
+            state.ingredients = state.ingredients.filter(
+                (item,index) => index !== action.payload.index
+            );
+            if(state.bun) {
+                orderSlice.caseReducers.updatePrice(state);
             }
         },
-        initPrice(state) {
+        updatePrice(state) {
             let price = 0;
-            state.ingredients.map(item => price += (item.price*item.count));
+            state.ingredients.map(item => price += item.price);
+            price += state.bun.price*2;
             state.price = price;
         },
+        sortItems(state, action) {
+            const ingredient = state.ingredients.find(
+                (item,index) => index === action.payload.fromIndex
+            );
+            state.ingredients = state.ingredients.filter(
+                (item,index) => index !== action.payload.fromIndex);
+
+            state.ingredients.splice(action.payload.toIndex, 0, ingredient);
+        },
+        //Не смог переименовать в createOrder, так как в action addOrder и createOrder уже забиндены
         add(state, action) {
             const payload = action.payload;
             switch (payload.type) {
@@ -84,17 +77,9 @@ const orderSlice = createSlice({
                 default:
                     break;
             }
-        },
-        sort(state, action) {
-            const dragItem = action.payload.item;
-            const fromIndex = action.payload.fromIndex;
-            const toIndex = action.payload.toIndex;
-            const sourceCard = state.ingredients.find(item => item.id === dragItem.id);
-            state.ingredients = state.ingredients.filter(item => item.id !== dragItem.id);
-            state.ingredients.splice(toIndex+1, 0, sourceCard);
         }
     },
 });
 
-export const { addIngredient, dropIngredient, add, initPrice, sort } = orderSlice.actions;
+export const { add } = orderSlice.actions;
 export default orderSlice.reducer;

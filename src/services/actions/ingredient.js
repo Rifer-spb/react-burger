@@ -5,8 +5,9 @@ import {
 } from './constants';
 
 import { getIngredients} from "../../utils/api";
-import { loadItems, setCurrent } from "../slices/ingredientSlice";
+import { loadItems } from "../slices/ingredientSlice";
 import { checkResponse } from "../../utils/helpers/helperRequest";
+import {createAction} from "@reduxjs/toolkit";
 
 export function loadIngredients() {
     return function(dispatch) {
@@ -35,14 +36,14 @@ export function loadIngredients() {
     }
 }
 
-export function updateCurrent(item) {
-    return function (dispatch) {
-        dispatch(setCurrent(item));
+export const setCurrentIngredient = createAction('ingredient/setCurrent', function prepare(item) {
+    if(item) {
+        return {
+            payload: {...item},
+        }
+    } else {
+        return {
+            payload: null,
+        }
     }
-}
-
-export function clearCurrent() {
-    return function (dispatch) {
-        dispatch(setCurrent(null));
-    }
-}
+});

@@ -10,12 +10,8 @@ function AppMain() {
         <main className={style.main}>
             <div className={style.cols}>
                 <DndProvider backend={HTML5Backend}>
-                    <div>
-                        <BurgerIngredients />
-                    </div>
-                    <div>
-                        <BurgerConstructor/>
-                    </div>
+                    <BurgerIngredients />
+                    <BurgerConstructor/>
                 </DndProvider>
             </div>
         </main>
