@@ -4,19 +4,19 @@ import {CREATE_ORDER, CREATE_ORDER_FAILED, CREATE_ORDER_SUCCESS} from "./constan
 import {createOrder} from "../../utils/api";
 import {checkResponse} from "../../utils/helpers/helperRequest";
 
-export const addItemOrder = createAction('order/addItem', function prepare(item) {
+export const addItemOrder = createAction('order/addItem', (item) => {
     return {
         payload: {...item},
     }
 });
 
-export const dropItemOrder = createAction('order/dropItem', function prepare(index) {
+export const dropItemOrder = createAction('order/dropItem', (index) => {
     return {
         payload: { index: index },
     }
 });
 
-export const sortItemsOrder = createAction('order/sortItems', function prepare(fromIndex, toIndex) {
+export const sortItemsOrder = createAction('order/sortItems', (fromIndex, toIndex) => {
     return {
         payload: { fromIndex: fromIndex, toIndex: toIndex },
     }

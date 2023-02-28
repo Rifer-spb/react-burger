@@ -36,14 +36,6 @@ export function loadIngredients() {
     }
 }
 
-export const setCurrentIngredient = createAction('ingredient/setCurrent', function prepare(item) {
-    if(item) {
-        return {
-            payload: {...item},
-        }
-    } else {
-        return {
-            payload: null,
-        }
-    }
+export const setCurrentIngredient = createAction('ingredient/setCurrent', (item) =>  {
+    return { payload: item ? {...item} : null };
 });

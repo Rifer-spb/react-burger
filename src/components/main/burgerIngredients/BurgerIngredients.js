@@ -1,29 +1,22 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import style from './BurgerIngredients.module.css';
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import Category from './category/Category';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import ErrorComponent from "../../common/error/ErrorComponent";
-import { loadIngredients } from "../../../services/actions/ingredient";
 
 function BurgerIngredients () {
 
-    /**
-     * Не совсем понял что не так с табами при скроле? Проверил во всех браузерах - работает везде вроде. Что не так?
-     * Сейчас при скролле ингредиентов табы меняются на активные в зависимости от того где находится скролл.
-     * Так же при клике на таб, скполится к нужному блоку ингредиентов...
-     * Уточните.....
-     */
-
+    const currentCategory = useRef('bun');
     const categories = useRef([
         { id: 'bun', name: 'Булки', active: false },
         { id: 'sauce', name: 'Соусы', active: false },
         { id: 'main', name: 'Начинки', active: false }
     ]);
+    const [ scroll, setScroll ] = useState(0);
     const { ingredients, requestFailed } = useSelector(
         store => store.ingredient
     );
-    const dispatch = useDispatch();
     const categoriesRef = useRef();
     const categoryRefs = useRef([]);
 
@@ -43,7 +36,9 @@ function BurgerIngredients () {
     };
 
     const getCategory = (current) => {
-        return categories.current.find(category => category.id === current);
+        return categories.current.find(
+            category => category.id === current
+        );
     };
 
     const getCategoryItems = (current) => {
@@ -51,8 +46,9 @@ function BurgerIngredients () {
     };
 
     const handleCategoryScroll = () => {
+        setScroll(categoriesRef.current.scrollTop);
         let minPositions = [];
-        categoryRefs.current.map((item) => {
+        categoryRefs.current.forEach((item) => {
             const position = (item.getBoundingClientRect().bottom-categoriesRef.current.getBoundingClientRect().top)-1;
             if(position<0) {
                 minPositions.push(99999999);
@@ -66,9 +62,7 @@ function BurgerIngredients () {
         const categoryIndex = minPositions.indexOf(minPosition);
         categories.current.map((category, index) => {
             if(index === categoryIndex) {
-                category.active = true;
-            } else {
-                category.active = false;
+                currentCategory.current = category.id;
             }
             return category;
         });
@@ -76,18 +70,14 @@ function BurgerIngredients () {
 
     useEffect(() => {
 
-        dispatch(loadIngredients());
+        const catRef = categoriesRef.current;
 
-        handleCategoryScroll();
-
-        categoriesRef.current.addEventListener('scroll', handleCategoryScroll);
+        catRef.addEventListener('scroll', handleCategoryScroll);
 
         return () => {
-            if (categoriesRef.current) {
-                categoriesRef.current.removeEventListener('scroll', handleCategoryScroll);
-            }
+            catRef.removeEventListener('scroll', handleCategoryScroll);
         };
-    },[ingredients]);
+    },[scroll]);
 
     if(requestFailed) {
         return <ErrorComponent />
@@ -101,7 +91,7 @@ function BurgerIngredients () {
                     <Tab
                         key={item.id}
                         value={item.id}
-                        active={item.active}
+                        active={item.id === currentCategory.current}
                         onClick={() => selectItem(index)}
                         id={item.id}
                     >
