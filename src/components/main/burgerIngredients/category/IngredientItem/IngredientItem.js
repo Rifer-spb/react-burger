@@ -2,12 +2,19 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
 import style from './IngredientItem.module.css';
+import {useDrag} from "react-dnd";
 
-function IngredientItem({item, handleItemMouseClick}) {
+function IngredientItem({item, handleItemMouseClick, count}) {
+
+    const [, dragRef] = useDrag({
+        type: 'ingredient',
+        item: { ...item }
+    });
+
     return (
         <>
-            <section className={style.item} onClick={handleItemMouseClick}>
-                <Counter count={1} size="default" extraClass="m-1" />
+            <section className={style.item} onClick={handleItemMouseClick} ref={dragRef}>
+                <Counter count={count} size="default" extraClass="m-1" />
                 <div>
                     <img src={item.image} alt={item.name} />
                 </div>
@@ -23,7 +30,8 @@ function IngredientItem({item, handleItemMouseClick}) {
 
 IngredientItem.propTypes = {
     item: PropTypes.object.isRequired,
-    handleItemMouseClick: PropTypes.func.isRequired
+    handleItemMouseClick: PropTypes.func.isRequired,
+    count: PropTypes.number.isRequired
 };
 
 export default IngredientItem

@@ -1,140 +1,120 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, {useState} from "react";
 import style from './BurgerConstructor.module.css';
-import {ConstructorElement, CurrencyIcon, Button, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
+import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../../common/modal/Modal";
 import OrderDetails from "./orderDetails/OrderDetails";
-import { DataContext, SelectedContext, OrderContext } from "../../../utils/services/ingredientsContext";
-import { createOrder } from "../../../utils/api";
-import { checkResponse } from "../../../utils/services/helperRequest";
+import { useDispatch, useSelector } from "react-redux";
+import {useDrop} from "react-dnd";
+import BurgerDragItem from "./BurgerDragItem";
+import { addItemOrder, dropItemOrder, addOrder } from "../../../services/actions/order";
 
 function BurgerConstructor() {
 
-    const { data } = useContext(DataContext);
-    const { selected } = useContext(SelectedContext);
-    const { orderState, orderDispatcher } = useContext(OrderContext);
-    const [ bun, setBun ] = useState(null);
-    const [ middle, setMiddle ] = useState([]);
+    const dispatch = useDispatch();
+    const { order } = useSelector(store => store);
     const [ popup, showPopup ] = useState(false);
-    const [error, setError] = useState({
-        hasError: false,
-        errorMessage: ''
+    const [, dropTarget] = useDrop({
+        accept: "ingredient",
+        drop(item) {
+            dispatch(addItemOrder(item));
+        },
     });
 
     const OrderDetailsPopupClose = () => {
         showPopup(false);
     };
 
-    const init = () => {
-        const items = selected.map(id => {
-            return data.find(item => item['_id'] === id);
-        });
-        const bun = items.find(item => item.type === 'bun');
-        setBun(bun);
-        setMiddle(
-            items.filter(item => item.type !== 'bun')
-        );
-        let sum = 0;
-        items.map(item => sum += item.price);
-        orderDispatcher({
-            type: 'set',
-            payload: { price: sum }
-        });
+    const handleDeleteIngredient = (event,index) => {
+        dispatch(dropItemOrder(index))
     };
 
     const handleSubmitCreateOrder = () => {
-        const ingredients = [
-            bun['_id'],
-            ...middle.map(item => item['_id']),
-            bun['_id']
-        ];
         const fields = {
-            ingredients: ingredients
+            ingredients: [
+                order.bun['_id'],
+                ...order.ingredients.map(item => item['_id']),
+                order.bun['_id']
+            ]
         };
-        createOrder(fields)
-            .then(response => checkResponse(response))
-            .then(response => {
-                orderDispatcher({
-                    type: 'set',
-                    payload: {
-                        name: response.name, number: response.order.number
-                    }
-                });
-                showPopup(true);
-            })
-            .catch((error) => {
-                setError({hasError: true, errorMessage: error.message})
-                showPopup(true);
-            });
+        dispatch(addOrder(fields));
+        showPopup(true);
     };
 
-    useEffect(() => {
-        if (data.length) {
-            init();
-        }
-    },[data, selected]);
-
     return (
-        <div className={style.main}>
-            <div className={style.items}>
-                {
-                    bun &&
-                    <section>
-                        <ConstructorElement
-                            type="top"
-                            isLocked={true}
-                            text={bun.name + ' (вверх)'}
-                            price={bun.price}
-                            thumbnail={bun.image}
-                        />
-                    </section>
-                }
-                {
-                    middle.length>0 &&
-                    <section className={style.middle}>
-                        {middle.map(item => (
-                            <div key={item['_id']}>
-                                <DragIcon type="primary" />
-                                <ConstructorElement
-                                    text={item.name}
-                                    price={item.price}
-                                    thumbnail={item.image}
-                                />
-                            </div>
-                        ))}
-                    </section>
-                }
-                {
-                    bun &&
-                    <section>
-                        <ConstructorElement
-                            type="bottom"
-                            isLocked={true}
-                            text={bun.name + ' (низ)'}
-                            price={bun.price}
-                            thumbnail={bun.image}
-                        />
-                    </section>
-                }
-            </div>
+        <div className={style.main} ref={dropTarget}>
             {
-                bun && middle.length>0 &&
+                !order.bun && !order.ingredients.length ?
+                <div className={style.empty + ' text_type_main-medium'}>
+                    <h2>Перетащите сюда ингредиенты...</h2>
+                </div> :
                 <>
-                    <section className={style.actions}>
-                        <div>
-                            <div className={style.price}>
-                                <span className="text_type_digits-medium">{orderState.price}</span>
-                                <CurrencyIcon type="primary" />
-                            </div>
-                            <Button htmlType="button" type="primary" size="medium" onClick={handleSubmitCreateOrder}>
-                                Оформить заказ
-                            </Button>
-                        </div>
-                    </section>
+                    <div className={style.items}>
+                        {
+                            order.bun &&
+                            <section>
+                                <ConstructorElement
+                                    type="top"
+                                    isLocked={true}
+                                    text={order.bun.name + ' (вверх)'}
+                                    price={order.bun.price}
+                                    thumbnail={order.bun.image}
+                                />
+                            </section>
+                        }
+                        {
+                            order.ingredients.length>0 &&
+                            <section className={style.middle}>
+                                {order.ingredients.map((item, index) => (
+                                    <BurgerDragItem
+                                        id={item['_id']}
+                                        name={item.name}
+                                        price={item.price}
+                                        image={item.image}
+                                        index={index}
+                                        key={index}
+                                        handleDeleteIngredient={handleDeleteIngredient}
+                                    />
+                                ))}
+                            </section>
+                        }
+                        {
+                            order.bun &&
+                            <section>
+                                <ConstructorElement
+                                    type="bottom"
+                                    isLocked={true}
+                                    text={order.bun.name + ' (низ)'}
+                                    price={order.bun.price}
+                                    thumbnail={order.bun.image}
+                                />
+                            </section>
+                        }
+                    </div>
                     {
-                        popup &&
-                        <Modal onClose={OrderDetailsPopupClose}>
-                            <OrderDetails number={orderState.number} error={error} />
-                        </Modal>
+                        order.bun && order.ingredients.length>0 &&
+                        <>
+                            <section className={style.actions}>
+                                <div>
+                                    <div className={style.price}>
+                                        <span className="text_type_digits-medium">{ order.price }</span>
+                                        <CurrencyIcon type="primary" />
+                                    </div>
+                                    <Button htmlType="button" type="primary" size="medium" onClick={handleSubmitCreateOrder}>
+                                        Оформить заказ
+                                    </Button>
+                                </div>
+                            </section>
+                            {
+                                popup &&
+                                <Modal onClose={OrderDetailsPopupClose}>
+                                    <OrderDetails
+                                        number={order.id}
+                                        error={order.requestFailed}
+                                        proccess={order.requestLoad}
+                                    />
+                                </Modal>
+                            }
+                        </>
                     }
                 </>
             }
