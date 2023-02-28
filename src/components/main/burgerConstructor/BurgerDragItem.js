@@ -47,7 +47,6 @@ export function BurgerDragItem({ id, name, price, image, handleDeleteIngredient,
             }
 
             dispatch(sortItemsOrder(dragIndex, hoverIndex));
-            dispatch(sortItemsOrder(dragIndex, hoverIndex));
 
             // Time to actually perform the action
             //moveCard(dragIndex, hoverIndex)
