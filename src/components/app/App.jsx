@@ -1,8 +1,9 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import AppHeader from "../header/AppHeader";
 import AppMain from '../main/AppMain';
 import { useDispatch } from "react-redux";
-import {loadIngredients} from "../../services/actions/ingredient";
+import { loadIngredients } from "../../services/actions/ingredient";
 
 function App() {
 
@@ -13,10 +14,10 @@ function App() {
     },[dispatch]);
 
     return (
-        <div>
+        <Router>
             <AppHeader/>
             <AppMain/>
-        </div>
+        </Router>
     );
 }
 

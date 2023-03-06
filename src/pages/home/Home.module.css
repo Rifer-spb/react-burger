@@ -1,0 +1,9 @@
+.cols {
+    display: flex;
+    align-items: normal;
+}
+
+.cols>div {
+    width: 50%;
+    padding-bottom: 50px;
+}
