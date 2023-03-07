@@ -4,6 +4,7 @@ import AppHeader from "../header/AppHeader";
 import style from "./App.module.css";
 import { useDispatch } from "react-redux";
 import { loadIngredients } from "../../services/actions/ingredient";
+import { ColumnLayout } from '../../layouts';
 import {
     HomePage,
     LoginPage,
@@ -13,7 +14,7 @@ import {
     ProfilePage,
     ProfileOrdersPage
 } from'../../pages';
-import ProfileForm from "../../pages/profile/rightCol/profileForm/ProfileForm";
+import { default as ProfileSideBar } from "../../pages/profile/sideBar/SideBar";
 
 function App() {
 
@@ -33,8 +34,10 @@ function App() {
                     <Route path="/register" element={<RegisterPage />}/>
                     <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
                     <Route path="/reset-password" element={<ResetPasswordPage />}/>
-                    <Route path="/profile" element={<ProfilePage />}>
-                        <Route index element={<ProfileForm/>} />
+                    <Route path="/profile" element={
+                        <ColumnLayout sideBar={<ProfileSideBar/>} />
+                    }>
+                        <Route index element={<ProfilePage/>} />
                         <Route path="orders" element={<ProfileOrdersPage/>} />
                     </Route>
                 </Routes>

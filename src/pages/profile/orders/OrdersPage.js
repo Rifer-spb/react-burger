@@ -1,12 +1,11 @@
 import React from "react";
 
-function Orders() {
+function OrdersPage() {
     return (
         <section>
             О, привет :)
         </section>
-    );
+    )
 }
 
-export default Orders;
-
+export default OrdersPage

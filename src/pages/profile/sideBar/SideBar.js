@@ -1,8 +1,8 @@
 import React from "react";
 import Menu from "./menu/Menu";
-import style from "./LeftCol.module.css"
+import style from "./SideBar.module.css"
 
-function LeftCol() {
+function SideBar() {
     return (
         <div className={style.col}>
             <Menu/>
@@ -13,4 +13,4 @@ function LeftCol() {
     );
 }
 
-export default LeftCol;
+export default SideBar;
