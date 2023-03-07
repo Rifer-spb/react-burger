@@ -1,12 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import style from "./ProfilePage.module.css";
 import {Input} from "@ya.praktikum/react-developer-burger-ui-components";
+import {useLocation, useNavigate} from 'react-router-dom';
 
 function ProfilePage() {
+
+    const { state, pathname } = useLocation();
+    const navigate = useNavigate();
+    const url = window.location.href;
+
+    useEffect(() => {
+        console.log(state);
+        if (state) {
+            navigate(pathname, { state: [...state, { path: pathname, url, title: 'List of Nobel laureates' }], replace: true });
+        }
+    },[pathname, state, url, navigate]);
 
     const onChange = () => {
 
     }
+
+    console.log(state);
 
     return (
         <section>

@@ -1,10 +1,11 @@
 import HomePage from "./home/HomePage";
 import LoginPage from "./login/LoginPage";
 import RegisterPage from "./register/RegisterPage";
-import ForgotPasswordPage from "./forgot-password/ForgotPasswordPage";
+import ForgotPasswordPage from "./forgotPassword/ForgotPasswordPage";
 import ResetPasswordPage from "./reset-password/ResetPasswordPage";
 import ProfilePage from "./profile/ProfilePage";
 import OrdersPage from "./profile/orders/OrdersPage";
+import NotFoundPage from "./notFound/NotFoundPage";
 
 export {
     HomePage,
@@ -13,5 +14,6 @@ export {
     ForgotPasswordPage,
     ResetPasswordPage,
     ProfilePage,
-    OrdersPage as ProfileOrdersPage
+    OrdersPage as ProfileOrdersPage,
+    NotFoundPage
 };

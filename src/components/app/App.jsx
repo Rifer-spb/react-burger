@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import AppHeader from "../header/AppHeader";
 import style from "./App.module.css";
 import { useDispatch } from "react-redux";
 import { loadIngredients } from "../../services/actions/ingredient";
+import { Breadcrumbs } from "../common/breadcrumbs";
 import { ColumnLayout } from '../../layouts';
 import {
     HomePage,
@@ -12,22 +13,28 @@ import {
     ForgotPasswordPage,
     ResetPasswordPage,
     ProfilePage,
-    ProfileOrdersPage
+    ProfileOrdersPage,
+    NotFoundPage
 } from'../../pages';
 import { default as ProfileSideBar } from "../../pages/profile/sideBar/SideBar";
 
 function App() {
 
     const dispatch = useDispatch();
+    const { state, pathname } = useLocation();
+    const navigate = useNavigate();
+    const url = window.location.href;
 
     useEffect(() => {
         dispatch(loadIngredients());
+        navigate('', { state: [...state, { path: pathname, url, title: 'Home' }], replace: true });
     },[dispatch]);
 
     return (
         <Router>
             <AppHeader/>
             <main className={style.main}>
+                <Breadcrumbs/>
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/login" element={<LoginPage />}/>
@@ -40,6 +47,7 @@ function App() {
                         <Route index element={<ProfilePage/>} />
                         <Route path="orders" element={<ProfileOrdersPage/>} />
                     </Route>
+                    <Route path="*" element={<NotFoundPage/>} />
                 </Routes>
             </main>
         </Router>

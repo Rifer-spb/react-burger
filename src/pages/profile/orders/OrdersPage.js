@@ -3,7 +3,7 @@ import React from "react";
 function OrdersPage() {
     return (
         <section>
-            О, привет :)
+            <h1 className="text_type_main-large">О, привет :)</h1>
         </section>
     )
 }
