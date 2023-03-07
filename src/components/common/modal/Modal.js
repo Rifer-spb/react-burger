@@ -11,20 +11,21 @@ const ModalOverlay = (props) => {
     );
 };
 
-function Modal(props) {
+function Modal({ title, children, onClose }) {
 
     useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
         document.addEventListener("keydown", handleKeyDown, false);
+
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         }
     },[]);
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-            props.onClose();
-        }
-    };
 
     return ReactDOM.createPortal(
         (
@@ -32,17 +33,17 @@ function Modal(props) {
                 <div className={style.modal}>
                     <section className={style.header}>
                         <h1 className="text_type_main-large">
-                            {props.title}
+                            {title}
                         </h1>
-                        <a href="#" className={style.close} onClick={props.onClose}>
+                        <a href="#" className={style.close} onClick={onClose}>
                             <CloseIcon type="primary" />
                         </a>
                     </section>
                     <section>
-                        {props.children}
+                        {children}
                     </section>
                 </div>
-                <ModalOverlay onClick={props.onClose}/>
+                <ModalOverlay onClick={onClose}/>
             </>
         ),
         modalRoot

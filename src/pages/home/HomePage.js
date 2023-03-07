@@ -1,11 +1,11 @@
 import React from "react";
-import style from './Home.module.css';
+import style from './HomePage.module.css';
 import BurgerIngredients from "../../components/main/burgerIngredients/BurgerIngredients";
 import BurgerConstructor from "../../components/main/burgerConstructor/BurgerConstructor";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-function Home() {
+function HomePage() {
     return(
         <div className={style.cols}>
             <DndProvider backend={HTML5Backend}>
@@ -16,4 +16,4 @@ function Home() {
     );
 }
 
-export default Home
+export default HomePage
