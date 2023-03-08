@@ -1,21 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import style from "./ProfilePage.module.css";
 import {Input} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useLocation, useNavigate} from 'react-router-dom';
 import {useSelector} from "react-redux";
 
 function ProfilePage() {
 
     const { user } = useSelector(store => store.auth);
-    const { state, pathname } = useLocation();
-    const navigate = useNavigate();
-    const url = window.location.href;
-
-    useEffect(() => {
-        if(!user) {
-            navigate('/login');
-        }
-    },[user, navigate]);
 
     const onChange = () => {
 
@@ -27,7 +17,7 @@ function ProfilePage() {
                 <Input
                     type={'text'}
                     placeholder={'Имя'}
-                    value="Марк"
+                    value={user.name}
                     name={'name'}
                     error={false}
                     errorText={'Ошибка'}
@@ -41,7 +31,7 @@ function ProfilePage() {
                 <Input
                     type={'text'}
                     placeholder={'Логин'}
-                    value="mail@stellar.burgers"
+                    value={user.email}
                     name={'mail'}
                     error={false}
                     errorText={'Ошибка'}

@@ -1,21 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link, useNavigate} from "react-router-dom";
+import React, { useState } from "react";
 import style from './LoginPage.module.css';
+import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
+import { Link } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
+import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../services/actions/auth";
 
 function LoginPage() {
 
+    const { request } = useSelector(store => store.auth);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const {
-        user,
-        requestLoad,
-        requestFailed,
-        requestFailedText
-    } = useSelector(store => store.auth);
     const [ email, setEmail ] = useState('');
     const [ emailError, setEmailError ] = useState(false);
     const [ emailErrorText, setEmailErrorText ] = useState('');
@@ -70,12 +64,6 @@ function LoginPage() {
         }
     };
 
-    useEffect(() => {
-        if(user) {
-            navigate('/');
-        }
-    },[user]);
-
     return(
         <section className={style.login}>
             <h1 className={style.h1 + " text_type_main-medium"}>Вход</h1>
@@ -107,10 +95,10 @@ function LoginPage() {
                     onIconClick={handleShowPasswordClick}
                 />
             </div>
-            {requestFailed && <p className={style.error + " text_type_main-small"}>{requestFailedText}</p>}
+            {request.failed && <p className={style.error + " text_type_main-small"}>{request.message}</p>}
             <div className={style.buttonGroup}>
                 {
-                    requestLoad ? <p className="text_type_main-medium">Авторизация...</p> :
+                    request.load ? <p className="text_type_main-medium">Авторизация...</p> :
                     <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Войти</Button>
                 }
             </div>

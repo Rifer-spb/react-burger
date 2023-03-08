@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-    AUTH_REQUEST,
-    AUTH_SUCCESS,
-    AUTH_ERROR
+    AUTH_REQUEST_LOAD,
+    AUTH_REQUEST_SUCCESS,
+    AUTH_REQUEST_FAILED
 } from '../actions/constants';
 
 const initialState = {
     user: null,
-    requestLoad: false,
-    requestFailed: false,
-    requestFailedText: ''
+    request: {
+        load: false,
+        failed: false,
+        message: ''
+    }
 };
 
 const authSlice = createSlice({
@@ -19,21 +21,21 @@ const authSlice = createSlice({
         loadUser(state, action) {
             const payload = action.payload;
             switch (payload.type) {
-                case AUTH_REQUEST: {
-                    state.requestLoad = true;
-                    state.requestFailed = false;
-                    state.requestFailedText = false;
+                case AUTH_REQUEST_LOAD: {
+                    state.request.load = true;
+                    state.request.failed = false;
+                    state.request.message = '';
                     break;
                 }
-                case AUTH_SUCCESS: {
+                case AUTH_REQUEST_SUCCESS: {
                     state.user = payload.user;
-                    state.requestLoad = false;
+                    state.request.load = false;
                     break;
                 }
-                case AUTH_ERROR: {
-                    state.requestFailed = true;
-                    state.requestFailedText = payload.message;
-                    state.requestLoad = false;
+                case AUTH_REQUEST_FAILED: {
+                    state.request.load = false;
+                    state.request.failed = true;
+                    state.request.message = payload.message;
                     break;
                 }
                 default:

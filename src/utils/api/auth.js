@@ -2,8 +2,10 @@ import {
     URL_AUTH_REGISTER,
     URL_AUTH_PASSWORD_RESET,
     URL_AUTH_LOGIN,
-    URL_AUTH_LOGOUT
+    URL_AUTH_LOGOUT,
+    URL_AUTH_GET_USER
 } from "./constants";
+import {getCookie} from "../cookies";
 
 export function passwordResetRequest(fields) {
     return fetch(URL_AUTH_PASSWORD_RESET, {
@@ -42,5 +44,15 @@ export function logoutRequest(formData) {
             'Content-Type': 'application/json;charset=utf-8'
         },
         body: JSON.stringify(formData)
+    });
+}
+
+export function getUserRequest() {
+    return fetch(URL_AUTH_GET_USER, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            Authorization: 'Bearer ' + getCookie('token')
+        }
     });
 }

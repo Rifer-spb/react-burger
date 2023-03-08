@@ -1,16 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import style from './RegisterPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link, useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
+import {useDispatch, useSelector} from "react-redux";
 import { register } from "../../services/actions/auth";
 
 function RegisterPage() {
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { user, requestLoad, requestFailed, requestFailedText } = useSelector(store => store.auth);
+    const { request } = useSelector(store => store.auth);
     const [ name, setName ] = useState('');
     const [ nameError, setNameError ] = useState(false);
     const [ nameErrorText, setNameErrorText ] = useState('');
@@ -68,7 +67,7 @@ function RegisterPage() {
         return false;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if(validate()) {
             dispatch(register({
                 name: name,
@@ -77,12 +76,6 @@ function RegisterPage() {
             }));
         }
     };
-
-    useEffect(() => {
-        if(user) {
-            navigate('/');
-        }
-    },[user, navigate]);
 
     return (
         <section className={style.register}>
@@ -128,10 +121,10 @@ function RegisterPage() {
                     onIconClick={handleShowPasswordClick}
                 />
             </div>
-            {requestFailed && <p className={style.error + " text_type_main-small"}>{requestFailedText}</p>}
+            {request.failed && <p className={style.error + " text_type_main-small"}>{request.message}</p>}
             <div className={style.buttonGroup}>
                 {
-                    requestLoad ? <p className="text_type_main-medium">Регистрация...</p> :
+                    request.load ? <p className="text_type_main-medium">Регистрация...</p> :
                     <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Зарегистрироваться</Button>
                 }
             </div>

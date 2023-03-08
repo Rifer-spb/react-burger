@@ -8,7 +8,8 @@ function Menu() {
 
     const dispatch = useDispatch();
 
-    const handleLogout = async () => {
+    const handleLogout = async (e) => {
+        e.preventDefault();
         dispatch(logout());
     };
 
@@ -22,7 +23,7 @@ function Menu() {
                     <Link to="/profile/orders">История заказов</Link>
                 </li>
                 <li className="text_type_main-medium">
-                    <a href="#" to="/profile/logout" onClick={handleLogout}>Выход</a>
+                    <a href="/" onClick={handleLogout}>Выход</a>
                 </li>
             </ul>
         </section>

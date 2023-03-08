@@ -1,41 +1,39 @@
 import {
-    AUTH_REQUEST,
-    AUTH_SUCCESS,
-    AUTH_ERROR
+    AUTH_REQUEST_LOAD,
+    AUTH_REQUEST_SUCCESS,
+    AUTH_REQUEST_FAILED
 } from './constants';
 
-import { loadUser, clearUser } from "../slices/authSlice";
-import {registerRequest, loginRequest, logoutRequest} from "../../utils/api/auth";
 import { checkResponse } from "../../utils/helpers/helperRequest";
-import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
+import { loadUser, clearUser } from "../slices/authSlice";
+import {getUserRequest, loginRequest, logoutRequest, registerRequest} from "../../utils/api/auth";
+import { deleteCookie, getCookie, setCookie } from "../../utils/cookies";
 
 export function register(formData) {
     return function(dispatch) {
         dispatch(loadUser({
-            type: AUTH_REQUEST
+            type: AUTH_REQUEST_LOAD
         }));
         registerRequest(formData)
             .then(response => checkResponse(response))
             .then( response  => {
                 if (response && response.success) {
                     dispatch(loadUser({
-                        type: AUTH_SUCCESS,
+                        type: AUTH_REQUEST_SUCCESS,
                         user: response.user
                     }));
-                    if (response.accessToken.indexOf('Bearer') === 0) {
-                        setCookie('token', response.accessToken.split('Bearer ')[1]);
-                        setCookie('refreshToken', response.refreshToken);
-                    }
+                    setCookie('token', response.accessToken.split('Bearer ')[1]);
+                    setCookie('refreshToken', response.refreshToken);
                 } else {
                     dispatch(loadUser({
-                        type: AUTH_ERROR,
+                        type: AUTH_REQUEST_FAILED,
                         message: response.message
                     }))
                 }
             }).catch( err => {
             console.log(err);
             dispatch(loadUser({
-                type: AUTH_ERROR,
+                type: AUTH_REQUEST_FAILED,
                 message: err.message
             }));
         })
@@ -45,30 +43,28 @@ export function register(formData) {
 export function login(formData) {
     return function(dispatch) {
         dispatch(loadUser({
-            type: AUTH_REQUEST
+            type: AUTH_REQUEST_LOAD
         }));
         loginRequest(formData)
             .then(response => checkResponse(response))
             .then( response  => {
                 if (response && response.success) {
                     dispatch(loadUser({
-                        type: AUTH_SUCCESS,
+                        type: AUTH_REQUEST_SUCCESS,
                         user: response.user
                     }));
-                    if (response.accessToken.indexOf('Bearer') === 0) {
-                        setCookie('token', response.accessToken.split('Bearer ')[1]);
-                        setCookie('refreshToken', response.refreshToken);
-                    }
+                    setCookie('token', response.accessToken.split('Bearer ')[1]);
+                    setCookie('refreshToken', response.refreshToken);
                 } else {
                     dispatch(loadUser({
-                        type: AUTH_ERROR,
+                        type: AUTH_REQUEST_FAILED,
                         message: response.message
                     }))
                 }
             }).catch( err => {
             console.log(err);
             dispatch(loadUser({
-                type: AUTH_ERROR,
+                type: AUTH_REQUEST_FAILED,
                 message: err.message
             }));
         })
@@ -83,5 +79,34 @@ export function logout() {
         dispatch(clearUser());
         deleteCookie('token');
         deleteCookie('refreshToken');
+    }
+}
+
+export function getUser() {
+    return function(dispatch) {
+        dispatch(loadUser({
+            type: AUTH_REQUEST_LOAD
+        }));
+        getUserRequest()
+            .then(response => checkResponse(response))
+            .then( response  => {
+                if (response && response.success) {
+                    dispatch(loadUser({
+                        type: AUTH_REQUEST_SUCCESS,
+                        user: response.user
+                    }));
+                } else {
+                    dispatch(loadUser({
+                        type: AUTH_REQUEST_FAILED,
+                        message: response.message
+                    }))
+                }
+            }).catch( err => {
+            console.log(err);
+            dispatch(loadUser({
+                type: AUTH_REQUEST_FAILED,
+                message: err.message
+            }));
+        })
     }
 }

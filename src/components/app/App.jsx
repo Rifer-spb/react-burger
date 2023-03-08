@@ -4,7 +4,7 @@ import AppHeader from "../header/AppHeader";
 import style from "./App.module.css";
 import { useDispatch } from "react-redux";
 import { loadIngredients } from "../../services/actions/ingredient";
-import { Breadcrumbs } from "../common/breadcrumbs";
+import { getUser } from "../../services/actions/auth";
 import { ColumnLayout } from '../../layouts';
 import {
     HomePage,
@@ -17,12 +17,17 @@ import {
     NotFoundPage
 } from'../../pages';
 import { default as ProfileSideBar } from "../../pages/profile/sideBar/SideBar";
+import { ProtectedRoute } from "../ProtectedRoute";
+import { getCookie } from "../../utils/cookies";
 
 function App() {
 
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (getCookie('token')) {
+            dispatch(getUser());
+        }
         dispatch(loadIngredients());
     },[dispatch]);
 
@@ -30,15 +35,32 @@ function App() {
         <Router>
             <AppHeader/>
             <main className={style.main}>
-                <Breadcrumbs/>
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
-                    <Route path="/login" element={<LoginPage />}/>
-                    <Route path="/register" element={<RegisterPage />}/>
-                    <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
-                    <Route path="/reset-password" element={<ResetPasswordPage />}/>
+                    <Route path="/login" element={
+                        <ProtectedRoute onlyUnAuth={true}>
+                            <LoginPage />
+                        </ProtectedRoute>
+                    }/>
+                    <Route path="/register" element={
+                        <ProtectedRoute onlyUnAuth={true}>
+                            <RegisterPage />
+                        </ProtectedRoute>
+                    }/>
+                    <Route path="/forgot-password" element={
+                        <ProtectedRoute onlyUnAuth={true}>
+                            <ForgotPasswordPage />
+                        </ProtectedRoute>
+                    }/>
+                    <Route path="/reset-password" element={
+                        <ProtectedRoute onlyUnAuth={true}>
+                            <ResetPasswordPage />
+                        </ProtectedRoute>
+                    }/>
                     <Route path="/profile" element={
-                        <ColumnLayout sideBar={<ProfileSideBar/>} />
+                        <ProtectedRoute>
+                            <ColumnLayout sideBar={<ProfileSideBar/>} />
+                        </ProtectedRoute>
                     }>
                         <Route index element={<ProfilePage/>} />
                         <Route path="orders" element={<ProfileOrdersPage/>} />
