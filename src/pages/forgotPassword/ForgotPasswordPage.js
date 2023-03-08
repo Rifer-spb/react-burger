@@ -3,15 +3,17 @@ import style from './ForgotPasswordPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link, useNavigate } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
-import { passwordResetRequest } from "../../utils/api/auth";
-import { checkResponse } from "../../utils/helpers/helperRequest";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { forgotPassword } from "../../services/actions/auth";
 
 function ForgotPasswordPage() {
 
+    const { request } = useSelector(store => store.auth);
     const [ email, setEmail ] = useState('');
     const [ error, setError ] = useState(false);
     const [ errorText, setErrorText ] = useState('');
-    const [ requestError, setRequestError ] = useState('');
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const validate = () => {
@@ -30,21 +32,12 @@ function ForgotPasswordPage() {
         return true;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if(validate()) {
-            setRequestError('');
-            passwordResetRequest({ email: email })
-                .then(response => checkResponse(response))
-                .then( response  => {
-                    if (response && response.success) {
-                        navigate('/reset-password');
-                    } else {
-                        setRequestError('Что-то пошло не так. Попробуйте еще раз..');
-                    }
-                }).catch( err => {
-                    console.log(err);
-                    setRequestError('Что-то пошло не так. Попробуйте еще раз..');
-                })
+            await dispatch(forgotPassword());
+            if(!request.failed) {
+                navigate('/reset-password');
+            }
         }
     };
 
@@ -65,10 +58,13 @@ function ForgotPasswordPage() {
                 />
             </div>
             {
-                requestError !== '' && <p className={style.requestError + " text_type_main-small"}>{requestError}</p>
+                request.failed && <p className={style.requestError + " text_type_main-small"}>{request.message}</p>
             }
             <div className={style.buttonGroup}>
-                <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Восстановить</Button>
+                {
+                    request.load ? <p className="text_type_main-medium">Отправка...</p> :
+                    <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Восстановить</Button>
+                }
             </div>
             <ul className={style.navigate}>
                 <li className="text_type_main-default text_color_inactive">

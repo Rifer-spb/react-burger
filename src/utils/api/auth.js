@@ -1,19 +1,30 @@
 import {
     URL_AUTH_REGISTER,
     URL_AUTH_PASSWORD_RESET,
+    URL_AUTH_PASSWORD_RESET_RESET,
     URL_AUTH_LOGIN,
     URL_AUTH_LOGOUT,
     URL_AUTH_GET_USER
 } from "./constants";
 import {getCookie} from "../cookies";
 
-export function passwordResetRequest(fields) {
+export function forgotPasswordRequest(formData) {
     return fetch(URL_AUTH_PASSWORD_RESET, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
-        body: JSON.stringify(fields)
+        body: JSON.stringify(formData)
+    });
+}
+
+export function resetPasswordRequest(formData) {
+    return fetch(URL_AUTH_PASSWORD_RESET_RESET, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(formData)
     });
 }
 
@@ -56,3 +67,4 @@ export function getUserRequest() {
         }
     });
 }
+

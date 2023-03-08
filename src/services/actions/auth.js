@@ -5,8 +5,14 @@ import {
 } from './constants';
 
 import { checkResponse } from "../../utils/helpers/helperRequest";
-import { loadUser, clearUser } from "../slices/authSlice";
-import {getUserRequest, loginRequest, logoutRequest, registerRequest} from "../../utils/api/auth";
+import { loadUser, clearUser, setRequest } from "../slices/authSlice";
+import {
+    getUserRequest,
+    loginRequest,
+    logoutRequest,
+    registerRequest,
+    forgotPasswordRequest
+} from "../../utils/api/auth";
 import { deleteCookie, getCookie, setCookie } from "../../utils/cookies";
 
 export function register(formData) {
@@ -108,5 +114,33 @@ export function getUser() {
                 message: err.message
             }));
         })
+    }
+}
+
+export function forgotPassword() {
+    return async dispatch => {
+        dispatch(setRequest({
+            type: AUTH_REQUEST_LOAD
+        }));
+        await forgotPasswordRequest()
+            .then(response => checkResponse(response))
+            .then( response  => {
+                if (response && response.success) {
+                    dispatch(setRequest({
+                        type: AUTH_REQUEST_SUCCESS
+                    }))
+                } else {
+                    dispatch(setRequest({
+                        type: AUTH_REQUEST_FAILED,
+                        message: response.message
+                    }))
+                }
+            }).catch( err => {
+            console.log(err);
+            dispatch(setRequest({
+                type: AUTH_REQUEST_FAILED,
+                message: err.message
+            }));
+        });
     }
 }

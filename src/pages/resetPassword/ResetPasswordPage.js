@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import style from './ResetPasswordPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {resetPasswordRequest} from "../../utils/api/auth";
+import {checkResponse} from "../../utils/helpers/helperRequest";
 
 function ResetPasswordPage() {
 
+    const navigate = useNavigate();
+
+    const [ showPassword, setShowPassword ] = useState(false);
     const [ password, setPassword ] = useState('');
     const [ passwordError, setPasswordError ] = useState(false);
     const [ passwordErrorText, setPasswordErrorText ] = useState('');
@@ -12,6 +17,10 @@ function ResetPasswordPage() {
     const [ code, setCode ] = useState('');
     const [ codeError, setCodeError ] = useState(false);
     const [ codeErrorText, setCodeErrorText ] = useState('');
+
+    const handleShowPasswordClick = () => {
+        setShowPassword(!showPassword);
+    };
 
     const validate = () => {
 
@@ -41,9 +50,20 @@ function ResetPasswordPage() {
         return false;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if(validate()) {
-            console.log(true);
+            resetPasswordRequest({
+                password: password,
+                token: code
+            })
+                .then(response => checkResponse(response))
+                .then( response  => {
+                    if (response && response.success) {
+                        navigate('/login');
+                    }
+                }).catch( err => {
+                    console.log(err);
+                });
         }
     };
 
@@ -52,7 +72,7 @@ function ResetPasswordPage() {
             <h1 className={style.h1 + " text_type_main-medium"}>Восстановление пароля</h1>
             <div className={style.formGroup}>
                 <Input
-                    type={'text'}
+                    type={showPassword?'text':'password'}
                     placeholder={'Введите новый пароль'}
                     value={password}
                     name={'name'}
@@ -61,6 +81,8 @@ function ResetPasswordPage() {
                     size={'default'}
                     extraClass="ml-1"
                     onChange={(e) => setPassword(e.target.value)}
+                    icon={'ShowIcon'}
+                    onIconClick={handleShowPasswordClick}
                 />
             </div>
             <div className={style.formGroup}>
