@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {BrowserRouter as Router, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AppHeader from "../header/AppHeader";
 import style from "./App.module.css";
 import { useDispatch } from "react-redux";
@@ -21,13 +21,9 @@ import { default as ProfileSideBar } from "../../pages/profile/sideBar/SideBar";
 function App() {
 
     const dispatch = useDispatch();
-    const { state, pathname } = useLocation();
-    const navigate = useNavigate();
-    const url = window.location.href;
 
     useEffect(() => {
         dispatch(loadIngredients());
-        navigate('', { state: [...state, { path: pathname, url, title: 'Home' }], replace: true });
     },[dispatch]);
 
     return (

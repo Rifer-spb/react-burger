@@ -1,8 +1,17 @@
 import React from "react";
 import style from './Menu.module.css';
 import { Link  } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../../services/actions/auth";
 
 function Menu() {
+
+    const dispatch = useDispatch();
+
+    const handleLogout = async () => {
+        dispatch(logout());
+    };
+
     return (
         <section className={style.menu}>
             <ul className={style.ul}>
@@ -13,7 +22,7 @@ function Menu() {
                     <Link to="/profile/orders">История заказов</Link>
                 </li>
                 <li className="text_type_main-medium">
-                    <Link to="/profile/logout">Выход</Link>
+                    <a href="#" to="/profile/logout" onClick={handleLogout}>Выход</a>
                 </li>
             </ul>
         </section>

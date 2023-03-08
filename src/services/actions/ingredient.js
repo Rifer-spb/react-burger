@@ -4,7 +4,7 @@ import {
     LOAD_INGREDIENTS_SUCCESS
 } from './constants';
 
-import { getIngredients} from "../../utils/api";
+import { getIngredients } from "../../utils/api/ingredients";
 import { loadItems } from "../slices/ingredientSlice";
 import { checkResponse } from "../../utils/helpers/helperRequest";
 import {createAction} from "@reduxjs/toolkit";

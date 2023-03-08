@@ -25,7 +25,7 @@ function Modal({ title, children, onClose }) {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         }
-    },[]);
+    },[onClose]);
 
     return ReactDOM.createPortal(
         (

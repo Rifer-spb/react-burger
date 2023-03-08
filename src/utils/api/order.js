@@ -1,10 +1,5 @@
-const URL_DOMAIN = 'https://norma.nomoreparties.space';
-const URL_INGREDIENTS = URL_DOMAIN + '/api/ingredients';
+import { URL_DOMAIN } from "./constants";
 const URL_ORDERS = URL_DOMAIN + '/api/orders';
-
-export function getIngredients() {
-    return fetch(URL_INGREDIENTS);
-}
 
 export function createOrder(fields) {
     return fetch(URL_ORDERS, {

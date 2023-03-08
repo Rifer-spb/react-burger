@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit'
 import { add } from "../slices/orderSlice";
-import {CREATE_ORDER, CREATE_ORDER_FAILED, CREATE_ORDER_SUCCESS} from "./constants";
-import {createOrder} from "../../utils/api";
-import {checkResponse} from "../../utils/helpers/helperRequest";
+import { CREATE_ORDER, CREATE_ORDER_FAILED, CREATE_ORDER_SUCCESS } from "./constants";
+import { createOrder } from "../../utils/api/order";
+import { checkResponse } from "../../utils/helpers/helperRequest";
 
 export const addItemOrder = createAction('order/addItem', (item) => {
     return {
