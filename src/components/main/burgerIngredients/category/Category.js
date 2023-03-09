@@ -6,9 +6,11 @@ import Modal from "../../../common/modal/Modal";
 import IngredientDetails from "./IngredientItem/IngredientDetails/IngredientDetails";
 import {useDispatch, useSelector} from "react-redux";
 import { setCurrentIngredient } from "../../../../services/actions/ingredient";
+import {Link, useLocation} from "react-router-dom";
 
 function Category({category, items, index, setCategoryRef}) {
 
+    const location = useLocation();
     const dispatch = useDispatch();
     const { currentIngredient } = useSelector(store => ({
         currentIngredient: store.ingredient.current
@@ -47,12 +49,17 @@ function Category({category, items, index, setCategoryRef}) {
                 <h2 className="text_type_main-medium">{category.name}</h2>
                 <div className={style.items}>
                     {items.map(item => (
-                        <IngredientItem
+                        <Link
                             key={item['_id']}
-                            item={item}
-                            handleItemMouseClick={() => handleItemMouseClick(item)}
-                            count={getCount(item['_id'])}
-                        />
+                            to={{pathname: `/ingredients/${item['_id']}`}}
+                            state={{ background: location }}
+                         className={style.ingredientLink}>
+                            <IngredientItem
+                                item={item}
+                                handleItemMouseClick={() => handleItemMouseClick(item)}
+                                count={getCount(item['_id'])}
+                            />
+                        </Link>
                     ))}
                 </div>
                 {

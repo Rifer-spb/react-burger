@@ -4,16 +4,14 @@ import {
     AUTH_REQUEST_FAILED
 } from './constants';
 
-import { checkResponse } from "../../utils/helpers/helperRequest";
-import { loadUser, clearUser, setRequest } from "../slices/authSlice";
+import { loadUser, clearUser } from "../slices/authSlice";
 import {
     getUserRequest,
     loginRequest,
     logoutRequest,
-    registerRequest,
-    forgotPasswordRequest
+    registerRequest
 } from "../../utils/api/auth";
-import { deleteCookie, getCookie, setCookie } from "../../utils/cookies";
+import {createAction} from "@reduxjs/toolkit";
 
 export function register(formData) {
     return function(dispatch) {
@@ -21,15 +19,12 @@ export function register(formData) {
             type: AUTH_REQUEST_LOAD
         }));
         registerRequest(formData)
-            .then(response => checkResponse(response))
-            .then( response  => {
+            .then(response  => {
                 if (response && response.success) {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_SUCCESS,
                         user: response.user
                     }));
-                    setCookie('token', response.accessToken.split('Bearer ')[1]);
-                    setCookie('refreshToken', response.refreshToken);
                 } else {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_FAILED,
@@ -52,15 +47,12 @@ export function login(formData) {
             type: AUTH_REQUEST_LOAD
         }));
         loginRequest(formData)
-            .then(response => checkResponse(response))
-            .then( response  => {
+            .then(response  => {
                 if (response && response.success) {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_SUCCESS,
                         user: response.user
                     }));
-                    setCookie('token', response.accessToken.split('Bearer ')[1]);
-                    setCookie('refreshToken', response.refreshToken);
                 } else {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_FAILED,
@@ -79,12 +71,8 @@ export function login(formData) {
 
 export function logout() {
     return async function(dispatch) {
-        await logoutRequest({
-            token: getCookie('refreshToken')
-        });
+        await logoutRequest();
         dispatch(clearUser());
-        deleteCookie('token');
-        deleteCookie('refreshToken');
     }
 }
 
@@ -94,8 +82,7 @@ export function getUser() {
             type: AUTH_REQUEST_LOAD
         }));
         getUserRequest()
-            .then(response => checkResponse(response))
-            .then( response  => {
+            .then(response  => {
                 if (response && response.success) {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_SUCCESS,
@@ -105,42 +92,24 @@ export function getUser() {
                     dispatch(loadUser({
                         type: AUTH_REQUEST_FAILED,
                         message: response.message
-                    }))
+                    }));
                 }
             }).catch( err => {
-            console.log(err);
-            dispatch(loadUser({
-                type: AUTH_REQUEST_FAILED,
-                message: err.message
-            }));
-        })
+                console.log(err);
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_FAILED,
+                    message: err.message
+                }));
+            })
     }
 }
 
-export function forgotPassword() {
-    return async dispatch => {
-        dispatch(setRequest({
-            type: AUTH_REQUEST_LOAD
-        }));
-        await forgotPasswordRequest()
-            .then(response => checkResponse(response))
-            .then( response  => {
-                if (response && response.success) {
-                    dispatch(setRequest({
-                        type: AUTH_REQUEST_SUCCESS
-                    }))
-                } else {
-                    dispatch(setRequest({
-                        type: AUTH_REQUEST_FAILED,
-                        message: response.message
-                    }))
-                }
-            }).catch( err => {
-            console.log(err);
-            dispatch(setRequest({
-                type: AUTH_REQUEST_FAILED,
-                message: err.message
-            }));
-        });
-    }
-}
+export const clearRequest = createAction('auth/clearRequest', () =>  {
+    return {
+        payload: {
+            load: false,
+            failed: false,
+            message: ''
+        }
+    };
+});

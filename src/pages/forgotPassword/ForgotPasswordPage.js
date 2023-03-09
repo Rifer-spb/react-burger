@@ -3,17 +3,19 @@ import style from './ForgotPasswordPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link, useNavigate } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { forgotPassword } from "../../services/actions/auth";
+import { forgotPasswordRequest } from "../../utils/api/auth";
+import { checkResponse } from "../../utils/helpers/helperRequest";
 
 function ForgotPasswordPage() {
 
-    const { request } = useSelector(store => store.auth);
+    const [ request, setRequest ] = useState({
+        load: false,
+        failed: false,
+        message: ''
+    });
     const [ email, setEmail ] = useState('');
     const [ error, setError ] = useState(false);
     const [ errorText, setErrorText ] = useState('');
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const validate = () => {
@@ -34,10 +36,34 @@ function ForgotPasswordPage() {
 
     const handleSubmit = async () => {
         if(validate()) {
-            await dispatch(forgotPassword());
-            if(!request.failed) {
-                navigate('/reset-password');
-            }
+            setRequest({
+                load: true,
+                failed: false,
+                message: ''
+            });
+            forgotPasswordRequest()
+                .then(response => checkResponse(response))
+                .then( response  => {
+                    if (response && response.success) {
+                        setRequest({
+                            ...request, load: false
+                        });
+                        navigate('/reset-password');
+                    } else {
+                        setRequest({
+                            load: false,
+                            failed: true,
+                            message: response.message
+                        });
+                    }
+                }).catch( err => {
+                console.log(err);
+                setRequest({
+                    load: false,
+                    failed: true,
+                    message: err.message
+                });
+            });
         }
     };
 

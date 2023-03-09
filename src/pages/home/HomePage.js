@@ -6,6 +6,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 function HomePage() {
+
     return(
         <div className={style.cols}>
             <DndProvider backend={HTML5Backend}>

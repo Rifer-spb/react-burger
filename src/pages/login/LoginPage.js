@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import style from './LoginPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../services/actions/auth";
+import { clearRequest } from "../../services/actions/auth";
 
 function LoginPage() {
 
@@ -63,6 +64,12 @@ function LoginPage() {
             }));
         }
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearRequest());
+        }
+    },[]);
 
     return(
         <section className={style.login}>

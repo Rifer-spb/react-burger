@@ -35,9 +35,9 @@ function Modal({ title, children, onClose }) {
                         <h1 className="text_type_main-large">
                             {title}
                         </h1>
-                        <a href="#" className={style.close} onClick={onClose}>
+                        <span className={style.close} onClick={onClose}>
                             <CloseIcon type="primary" />
-                        </a>
+                        </span>
                     </section>
                     <section>
                         {children}

@@ -40,4 +40,5 @@
 
 .header>.close {
     width: 30px;
+    cursor: pointer;
 }

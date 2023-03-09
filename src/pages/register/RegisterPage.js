@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import style from './RegisterPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link } from "react-router-dom";
 import { isEmailValid } from "../../utils/helpers/helperField";
 import {useDispatch, useSelector} from "react-redux";
-import { register } from "../../services/actions/auth";
+import {clearRequest, register} from "../../services/actions/auth";
 
 function RegisterPage() {
 
@@ -76,6 +76,12 @@ function RegisterPage() {
             }));
         }
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearRequest());
+        }
+    },[]);
 
     return (
         <section className={style.register}>

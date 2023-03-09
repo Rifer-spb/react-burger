@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import style from './ResetPasswordPage.module.css';
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import {resetPasswordRequest} from "../../utils/api/auth";
 import {checkResponse} from "../../utils/helpers/helperRequest";
 
 function ResetPasswordPage() {
 
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+
+    const [ request, setRequest ] = useState({
+        load: false,
+        failed: false,
+        message: ''
+    });
 
     const [ showPassword, setShowPassword ] = useState(false);
     const [ password, setPassword ] = useState('');
@@ -52,6 +60,11 @@ function ResetPasswordPage() {
 
     const handleSubmit = async () => {
         if(validate()) {
+            setRequest({
+                load: true,
+                failed: false,
+                message: ''
+            });
             resetPasswordRequest({
                 password: password,
                 token: code
@@ -59,13 +72,33 @@ function ResetPasswordPage() {
                 .then(response => checkResponse(response))
                 .then( response  => {
                     if (response && response.success) {
+                        setRequest({
+                            ...request, load: false
+                        });
                         navigate('/login');
+                    } else {
+                        setRequest({
+                            load: false,
+                            failed: true,
+                            message: response.message
+                        });
                     }
                 }).catch( err => {
                     console.log(err);
+                    setRequest({
+                        load: false,
+                        failed: true,
+                        message: err.message
+                    });
                 });
         }
     };
+
+    useEffect(() => {
+        if(!token) {
+            navigate('/', { replace: true });
+        }
+    },[token, navigate]);
 
     return (
         <section className={style.resetPassword}>
@@ -98,8 +131,14 @@ function ResetPasswordPage() {
                     onChange={(e) => setCode(e.target.value)}
                 />
             </div>
+            {
+                request.failed && <p className={style.requestError + " text_type_main-small"}>{request.message}</p>
+            }
             <div className={style.buttonGroup}>
-                <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Сохранить</Button>
+                {
+                    request.load ? <p className="text_type_main-medium">Отправка...</p> :
+                    <Button htmlType="button" type="primary" size="medium" onClick={handleSubmit}>Сохранить</Button>
+                }
             </div>
             <ul className={style.navigate}>
                 <li className="text_type_main-default text_color_inactive">

@@ -1,9 +1,27 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import style from './ItemInfo.module.css';
-import PropTypes from "prop-types";
+import {useParams} from "react-router";
+import { useSelector } from "react-redux";
 
-function IngredientDetails({item}) {
+function IngredientDetails() {
+
+    const { id } = useParams();
+    const { ingredients } = useSelector(store => store.ingredient);
+    const [ item, setItem ] = useState({});
+    const { currentIngredient } = useSelector(store => ({
+        currentIngredient: store.ingredient.current
+    }));
+
+    useEffect(() => {
+        if(id) {
+            setItem(ingredients.find(item => item['_id'] === id));
+        } else if (currentIngredient) {
+            setItem(currentIngredient);
+        }
+    },[ingredients, id, currentIngredient]);
+
     return (
+        item &&
         <div className={style.itemInfo}>
             <img src={item.image_large} className={style.img} alt={item.name} />
             <h2 className={style.h2 + ' text_type_main-medium'}>{item.name}</h2>
@@ -28,9 +46,5 @@ function IngredientDetails({item}) {
         </div>
     );
 }
-
-IngredientDetails.propTypes = {
-    item: PropTypes.object.isRequired
-};
 
 export default IngredientDetails
