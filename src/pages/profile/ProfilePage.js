@@ -68,6 +68,12 @@ function ProfilePage() {
         return false;
     };
 
+    const handleCancel = () => {
+        setName(user.name);
+        setEmail(user.email);
+        setPassword('');
+    };
+
     const handleSubmit = () => {
         if(validate()) {
             setRequest({
@@ -148,6 +154,7 @@ function ProfilePage() {
                 />
             </div>
             <div className={style.buttonGroup}>
+                <Button htmlType="button" type="secondary" size="medium" onClick={handleCancel}>Отмена</Button>
                 {
                     request.load ?
                     <Button htmlType="button" type="primary" size="medium">Сохранение...</Button> :
