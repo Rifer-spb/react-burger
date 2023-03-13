@@ -109,6 +109,7 @@ export async function getUserRequest() {
     if(!response.ok) {
         if(response.status === 401 || response.status === 403) {
             await refreshTokenRequest();
+            config.headers.Authorization = 'Bearer ' + getCookie('token');
             response = await requestOnly(URL_AUTH_GET_USER, config);
         }
     }
