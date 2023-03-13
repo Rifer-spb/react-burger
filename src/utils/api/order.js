@@ -1,8 +1,8 @@
-import { URL_DOMAIN } from "./constants";
-const URL_ORDERS = URL_DOMAIN + '/api/orders';
+import { URL_ORDERS } from "./constants";
+import { request } from "../helpers/helperRequest";
 
 export function createOrder(fields) {
-    return fetch(URL_ORDERS, {
+    return request(URL_ORDERS, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'

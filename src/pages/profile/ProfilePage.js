@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import style from "./ProfilePage.module.css";
 import {Input, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector} from "react-redux";
-import {isEmailValid} from "../../utils/helpers/helperField";
 import {updateUserRequest} from "../../utils/api/auth";
+import {useFormAndValidation} from "../../utils/hooks";
 
 function ProfilePage() {
 
@@ -14,64 +14,32 @@ function ProfilePage() {
     });
 
     const { user } = useSelector(store => store.auth);
-    const [ name, setName ] = useState(user.name);
-    const [ nameError, setNameError ] = useState(false);
-    const [ nameErrorText, setNameErrorText ] = useState('');
-
-    const [ email, setEmail ] = useState(user.email);
-    const [ emailError, setEmailError ] = useState(false);
-    const [ emailErrorText, setEmailErrorText ] = useState('');
-
-    const [ password, setPassword ] = useState('');
-    const [ passwordError, setPasswordError ] = useState(false);
-    const [ passwordErrorText, setPasswordErrorText ] = useState('');
-
-    const validate = () => {
-
-        let error = false;
-
-        setNameError(false);
-        setNameErrorText('');
-
-        if(name === '') {
-            setNameError(true);
-            setNameErrorText('Необходимо указать имя');
-            error = true;
+    const { fields, handleChange, validate, setFields } = useFormAndValidation({
+        name: {
+            value: '',
+            error: false,
+            errorText: '',
+            rules: ['required']
+        },
+        email: {
+            value: '',
+            error: false,
+            errorText: '',
+            rules: ['required','email']
+        },
+        password: {
+            value: '',
+            error: false,
+            errorText: '',
+            rules: ['required']
         }
-
-        setEmailError(false);
-        setEmailErrorText('');
-
-        if(email === '') {
-            setEmailError(true);
-            setEmailErrorText('Необходимо указать e-mail');
-            error = true;
-        } else if (!isEmailValid(email)) {
-            setEmailError(true);
-            setEmailErrorText('Некорректный e-mail');
-            error = true;
-        }
-
-        setPasswordError(false);
-        setPasswordErrorText('');
-
-        if(password === '') {
-            setPasswordError(true);
-            setPasswordErrorText('Необходимо указать пароль');
-            error = true;
-        }
-
-        if(!error) {
-            return true;
-        }
-
-        return false;
-    };
+    });
 
     const handleCancel = () => {
-        setName(user.name);
-        setEmail(user.email);
-        setPassword('');
+        fields.name.value = user.name;
+        fields.email.value = user.email;
+        fields.password.value = '';
+        setFields({ ...fields });
     };
 
     const handleSubmit = () => {
@@ -82,22 +50,14 @@ function ProfilePage() {
                 message: ''
             });
             updateUserRequest({
-                name: name,
-                email: email,
-                password: password
+                name: fields.name.value,
+                email: fields.email.value,
+                password: fields.password.value
             })
                 .then( response  => {
-                    if (response && response.success) {
-                        setRequest({
-                            ...request, load: false
-                        });
-                    } else {
-                        setRequest({
-                            load: false,
-                            failed: true,
-                            message: response.message
-                        });
-                    }
+                    setRequest({
+                        ...request, load: false
+                    });
                 }).catch( err => {
                 console.log(err);
                 setRequest({
@@ -109,19 +69,27 @@ function ProfilePage() {
         }
     };
 
+    useEffect(() => {
+        if (user) {
+            fields.name.value = user.name;
+            fields.email.value = user.email;
+            fields.password.value = '';
+        }
+    },[user,fields]);
+
     return (
         <section>
             <div className={style.formGroup}>
                 <Input
                     type={'text'}
                     placeholder={'Имя'}
-                    value={name}
+                    value={fields.name.value}
                     name={'name'}
-                    error={nameError}
-                    errorText={nameErrorText}
+                    error={fields.name.error}
+                    errorText={fields.name.errorText}
                     size={'default'}
                     extraClass="ml-1"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                     icon="EditIcon"
                 />
             </div>
@@ -129,13 +97,13 @@ function ProfilePage() {
                 <Input
                     type={'text'}
                     placeholder={'Логин'}
-                    value={email}
-                    name={'mail'}
-                    error={emailError}
-                    errorText={emailErrorText}
+                    value={fields.email.value}
+                    name={'email'}
+                    error={fields.email.error}
+                    errorText={fields.email.errorText}
                     size={'default'}
                     extraClass="ml-1"
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                     icon="EditIcon"
                 />
             </div>
@@ -143,13 +111,13 @@ function ProfilePage() {
                 <Input
                     type={'password'}
                     placeholder={'Пароль'}
-                    value={password}
-                    name={'name'}
-                    error={passwordError}
-                    errorText={passwordErrorText}
+                    value={fields.password.value}
+                    name={'password'}
+                    error={fields.password.error}
+                    errorText={fields.password.errorText}
                     size={'default'}
                     extraClass="ml-1"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                     icon="EditIcon"
                 />
             </div>

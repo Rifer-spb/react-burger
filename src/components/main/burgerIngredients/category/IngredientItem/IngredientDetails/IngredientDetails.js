@@ -8,17 +8,13 @@ function IngredientDetails() {
     const { id } = useParams();
     const { ingredients } = useSelector(store => store.ingredient);
     const [ item, setItem ] = useState({});
-    const { currentIngredient } = useSelector(store => ({
-        currentIngredient: store.ingredient.current
-    }));
 
     useEffect(() => {
         if(id) {
             setItem(ingredients.find(item => item['_id'] === id));
-        } else if (currentIngredient) {
-            setItem(currentIngredient);
         }
-    },[ingredients, id, currentIngredient]);
+
+    },[ingredients, id]);
 
     return (
         item &&

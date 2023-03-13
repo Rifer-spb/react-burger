@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router";
+import {Outlet} from "react-router";
 import style from './ColumnLayout.module.css';
 import PropTypes from 'prop-types';
 

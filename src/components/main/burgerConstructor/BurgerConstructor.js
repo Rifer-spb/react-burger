@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {useDrop} from "react-dnd";
 import BurgerDragItem from "./BurgerDragItem";
 import { addItemOrder, dropItemOrder, addOrder } from "../../../services/actions/order";
-import {useNavigate} from "react-router";
+import {useLocation, useNavigate} from "react-router";
 
 function BurgerConstructor() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const { order } = useSelector(store => store);
     const { user } = useSelector(store => store.auth);
     const [ popup, showPopup ] = useState(false);
@@ -33,7 +34,7 @@ function BurgerConstructor() {
 
     const handleSubmitCreateOrder = () => {
         if(!user) {
-            navigate('/login');
+            navigate('/login', { state: location });
         }
         const fields = {
             ingredients: [

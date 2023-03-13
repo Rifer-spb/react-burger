@@ -12,97 +12,86 @@ import {
     registerRequest
 } from "../../utils/api/auth";
 import {createAction} from "@reduxjs/toolkit";
+import { getCookie } from "../../utils/cookies";
 
-export function register(formData) {
-    return function(dispatch) {
+export function register(formData,callback) {
+    return async dispatch => {
         dispatch(loadUser({
             type: AUTH_REQUEST_LOAD
         }));
-        registerRequest(formData)
+        await registerRequest(formData)
             .then(response  => {
-                if (response && response.success) {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_SUCCESS,
-                        user: response.user
-                    }));
-                } else {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_FAILED,
-                        message: response.message
-                    }))
-                }
-            }).catch( err => {
-            console.log(err);
-            dispatch(loadUser({
-                type: AUTH_REQUEST_FAILED,
-                message: err.message
-            }));
-        })
-    }
-}
-
-export function login(formData) {
-    return function(dispatch) {
-        dispatch(loadUser({
-            type: AUTH_REQUEST_LOAD
-        }));
-        loginRequest(formData)
-            .then(response  => {
-                if (response && response.success) {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_SUCCESS,
-                        user: response.user
-                    }));
-                } else {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_FAILED,
-                        message: response.message
-                    }))
-                }
-            }).catch( err => {
-            console.log(err);
-            dispatch(loadUser({
-                type: AUTH_REQUEST_FAILED,
-                message: err.message
-            }));
-        })
-    }
-}
-
-export function logout() {
-    return async function(dispatch) {
-        await logoutRequest();
-        dispatch(clearUser());
-    }
-}
-
-export function getUser() {
-    return function(dispatch) {
-        dispatch(loadUser({
-            type: AUTH_REQUEST_LOAD
-        }));
-        getUserRequest()
-            .then(response  => {
-                if (response && response.success) {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_SUCCESS,
-                        user: response.user
-                    }));
-                } else {
-                    dispatch(loadUser({
-                        type: AUTH_REQUEST_FAILED,
-                        message: response.message
-                    }));
-                }
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_SUCCESS,
+                    user: response.user
+                }));
+                callback();
             }).catch( err => {
                 console.log(err);
                 dispatch(loadUser({
                     type: AUTH_REQUEST_FAILED,
                     message: err.message
                 }));
-            })
+            });
     }
 }
+
+export function login(formData, callback) {
+    return async dispatch => {
+        dispatch(loadUser({
+            type: AUTH_REQUEST_LOAD
+        }));
+        await loginRequest(formData)
+            .then(response  => {
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_SUCCESS,
+                    user: response.user
+                }));
+                callback();
+            }).catch( err => {
+                console.log(err);
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_FAILED,
+                    message: err.message
+                }));
+            });
+    }
+};
+
+export function logout() {
+    return async dispatch => {
+        await logoutRequest();
+        dispatch(clearUser());
+    }
+}
+
+export function getUser() {
+    return function (dispatch) {
+        dispatch(loadUser({
+            type: AUTH_REQUEST_LOAD
+        }));
+        getUserRequest()
+            .then(response  => {
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_SUCCESS,
+                    user: response.user
+                }));
+            }).catch( err => {
+                console.log(err);
+                dispatch(loadUser({
+                    type: AUTH_REQUEST_FAILED,
+                    message: err.message
+                }));
+            });
+    }
+}
+
+export const checkUserAuth = () => (dispatch) => {
+    if (getCookie("token")) {
+        dispatch(getUser());
+    }
+};
+
 
 export const clearRequest = createAction('auth/clearRequest', () =>  {
     return {

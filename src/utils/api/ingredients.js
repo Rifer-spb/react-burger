@@ -1,6 +1,6 @@
-import { URL_DOMAIN } from "./constants";
-const URL_INGREDIENTS = URL_DOMAIN + '/api/ingredients';
+import { URL_INGREDIENTS } from "./constants";
+import { request } from "../helpers/helperRequest";
 
 export function getIngredients() {
-    return fetch(URL_INGREDIENTS);
+    return request(URL_INGREDIENTS);
 }

@@ -7,6 +7,7 @@ import {
 
 const initialState = {
     user: null,
+    isLoggedIn: false,
     request: {
         load: false,
         failed: false,
@@ -30,6 +31,7 @@ const authSlice = createSlice({
                 case AUTH_REQUEST_SUCCESS: {
                     state.user = payload.user;
                     state.request.load = false;
+                    state.isLoggedIn = true;
                     break;
                 }
                 case AUTH_REQUEST_FAILED: {
@@ -44,6 +46,7 @@ const authSlice = createSlice({
         },
         clearUser(state) {
             state.user = null;
+            state.isLoggedIn = false;
         },
         setRequest(state, action) {
             const payload = action.payload;
@@ -70,7 +73,8 @@ const authSlice = createSlice({
         },
         clearRequest(state, action) {
             state.request = action.payload;
-        }
+        },
+
     },
 });
 
