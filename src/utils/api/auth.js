@@ -90,6 +90,11 @@ export function resetPasswordRequest(formData) {
     });
 }
 
+/*
+    Вот тут в функции getUserRequest я не понял как применить функцию request, так как в ней не отследить коды ответов.
+    Поетому создал отдельную функию requestOnly. Через нее и ловлю уже 401 или 403 для обновления токена.
+    Так или как?
+*/
 export async function getUserRequest() {
     const config = {
         method : 'GET',
