@@ -28,18 +28,11 @@ export function addOrder(fields) {
             type: CREATE_ORDER
         }));
         createOrder(fields)
-            .then(response => checkResponse(response))
             .then( response  => {
-                if (response && response.success) {
-                    dispatch(add({
-                        type: CREATE_ORDER_SUCCESS,
-                        order: response.order
-                    }))
-                } else {
-                    dispatch(add({
-                        type: CREATE_ORDER_FAILED
-                    }))
-                }
+                dispatch(add({
+                    type: CREATE_ORDER_SUCCESS,
+                    order: response.order
+                }))
             }).catch( err => {
             console.log(err);
             dispatch(add({
