@@ -7,11 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {useDrop} from "react-dnd";
 import BurgerDragItem from "./BurgerDragItem";
 import { addItemOrder, dropItemOrder, addOrder } from "../../../services/actions/order";
+import {useLocation, useNavigate} from "react-router";
 
 function BurgerConstructor() {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
     const { order } = useSelector(store => store);
+    const { user } = useSelector(store => store.auth);
     const [ popup, showPopup ] = useState(false);
     const [, dropTarget] = useDrop({
         accept: "ingredient",
@@ -29,6 +33,9 @@ function BurgerConstructor() {
     };
 
     const handleSubmitCreateOrder = () => {
+        if(!user) {
+            navigate('/login', { state: location });
+        }
         const fields = {
             ingredients: [
                 order.bun['_id'],

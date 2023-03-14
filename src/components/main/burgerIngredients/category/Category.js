@@ -2,30 +2,17 @@ import React, {useEffect, useRef} from "react";
 import PropTypes from 'prop-types';
 import style from './Category.module.css';
 import IngredientItem from './IngredientItem/IngredientItem';
-import Modal from "../../../common/modal/Modal";
-import IngredientDetails from "./IngredientItem/IngredientDetails/IngredientDetails";
-import {useDispatch, useSelector} from "react-redux";
-import { setCurrentIngredient } from "../../../../services/actions/ingredient";
+import {useSelector} from "react-redux";
+import {Link, useLocation} from "react-router-dom";
 
 function Category({category, items, index, setCategoryRef}) {
 
-    const dispatch = useDispatch();
-    const { currentIngredient } = useSelector(store => ({
-        currentIngredient: store.ingredient.current
-    }));
+    const location = useLocation();
     const categoryBlockRef = useRef();
     const { orderBun, orderIngredients } = useSelector(store => ({
         orderBun: store.order.bun,
         orderIngredients: store.order.ingredients
     }));
-
-    const handleItemMouseClick = (item) => {
-        dispatch(setCurrentIngredient(item));
-    };
-
-    const itemPopupClose = () => {
-        dispatch(setCurrentIngredient(null));
-    };
 
     const getCount = (id) => {
         if(orderBun && id === orderBun['_id']) {
@@ -47,20 +34,19 @@ function Category({category, items, index, setCategoryRef}) {
                 <h2 className="text_type_main-medium">{category.name}</h2>
                 <div className={style.items}>
                     {items.map(item => (
-                        <IngredientItem
+                        <Link
                             key={item['_id']}
-                            item={item}
-                            handleItemMouseClick={() => handleItemMouseClick(item)}
-                            count={getCount(item['_id'])}
-                        />
+                            to={{ pathname: `/ingredients/${item['_id']}` }}
+                            state={{ background: location }}
+                            className={style.ingredientLink}
+                        >
+                            <IngredientItem
+                                item={item}
+                                count={getCount(item['_id'])}
+                            />
+                        </Link>
                     ))}
                 </div>
-                {
-                    currentIngredient &&
-                    <Modal onClose={itemPopupClose} title="Детали ингредиента">
-                        <IngredientDetails item={currentIngredient} />
-                    </Modal>
-                }
             </div>
         </div>
     );

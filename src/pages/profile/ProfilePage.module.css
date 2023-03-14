@@ -1,0 +1,13 @@
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.buttonGroup {
+    text-align: right;
+}
+
+.requestError {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}

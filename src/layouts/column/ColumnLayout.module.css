@@ -1,0 +1,7 @@
+.columnLayout {
+    margin-top: 100px;
+}
+
+.cols {
+    display: flex;
+}

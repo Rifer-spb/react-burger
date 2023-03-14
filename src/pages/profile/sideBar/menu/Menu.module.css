@@ -1,0 +1,18 @@
+.menu {
+    margin-bottom: 80px;
+}
+
+.ul li a {
+    text-decoration: none;
+    color: #8585ad;
+    padding: 17px 0;
+    display: block;
+}
+
+.ul li a:hover {
+    color: #FFFFFF;
+}
+
+.active a {
+    color: #FFFFFF !important;
+}

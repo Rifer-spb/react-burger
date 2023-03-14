@@ -4,7 +4,7 @@ import {CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-com
 import style from './IngredientItem.module.css';
 import {useDrag} from "react-dnd";
 
-function IngredientItem({item, handleItemMouseClick, count}) {
+function IngredientItem({item, count}) {
 
     const [, dragRef] = useDrag({
         type: 'ingredient',
@@ -13,7 +13,7 @@ function IngredientItem({item, handleItemMouseClick, count}) {
 
     return (
         <>
-            <section className={style.item} onClick={handleItemMouseClick} ref={dragRef}>
+            <section className={style.item} ref={dragRef}>
                 <Counter count={count} size="default" extraClass="m-1" />
                 <div>
                     <img src={item.image} alt={item.name} />
@@ -30,7 +30,6 @@ function IngredientItem({item, handleItemMouseClick, count}) {
 
 IngredientItem.propTypes = {
     item: PropTypes.object.isRequired,
-    handleItemMouseClick: PropTypes.func.isRequired,
     count: PropTypes.number.isRequired
 };
 
