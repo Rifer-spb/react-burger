@@ -23,7 +23,7 @@ export const checkSuccess = (res) => {
 // В вызов приходит `endpoint`(часть урла, которая идет после базового) и опции
 export const request = (endpoint, options) => {
     // а также в ней базовый урл сразу прописывается, чтобы не дублировать в каждом запросе
-    return fetch(`${BASE_URL}${endpoint}`, options)
+    return requestOnly(endpoint, options)
         .then(checkResponse)
         .then(checkSuccess);
 };
